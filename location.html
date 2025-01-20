@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit SignUp</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  
+  <link rel="stylesheet" href="home.css">
+  <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmsDc7bwmGQEGaxsxIB2MT9RUUbNtvMmw"
+  defer
+></script>
+
+  
+</head>
+<body onload=" getLocationAndCheckRadius()">
+    <div id="home">
+    <div class="orbit1">
+        Orbit
+    </div>
+ </div>
+
+ <div class="b">
+
+  <div class="blocks">
+    <div id="aboutloc">
+    <p>Your Current Location and Work Location <p>
+    </div>
+    <div id="map"></div>
+    
+    </div>
+    
+    <div class="block2">
+        <div>
+            <p id="aboutloc"> Work Login Details</p>
+        </div>
+    <div class="d1">
+    
+    <!-- <p class="loc"><span  class="locations" id="lat"></span></p>
+    <p class="loc"><span  class="locations" id="log"></span></p> -->
+    <h1 id="radi" class="res">radius</h1>
+    <h id="result" class="res">Waiting for location...</h>
+    <div id="map2"></div>
+    
+</div>
+
+
+    </div>
+</div>
+
+ 
+
+  <script src="gps.js" type="module"></script>
+  
+</body>
+</html>

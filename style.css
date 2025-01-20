@@ -1,8 +1,4 @@
-#header {
-    background-color: aliceblue;
-    height: 56px;
 
-}
 
 .logb{
 display: flex; /* Use flexbox to arrange the buttons */
@@ -244,7 +240,7 @@ transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s eas
 }
 
 /* Hover effect for LogIn, SignUp, and Google buttons */
-#login:hover, #signup:hover, .google:hover ,#mobile:hover{
+#login:hover,#detect:hover, #signup:hover, .google:hover ,#mobile:hover{
 transform: scale(1.1); /* Slight zoom effect */
 background-color: #04AA6D; /* Darker green */
 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
@@ -256,7 +252,7 @@ background-color: #f1f1f1; /* Light grey background for Google button */
 }
 
 /* Focus animation for buttons */
-#login:focus, #signup:focus, .google:focus,#mobile:focus {
+#login:focus,#detect:focus ,#signup:focus, .google:focus,#mobile:focus {
 outline: none; /* Remove outline */
 border: 2px solid #04AA6D; /* Highlight border */
 transform: scale(1.05); /* Slight zoom effect */

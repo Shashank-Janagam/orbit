@@ -56,7 +56,7 @@ if (signinButton) {
         // sessionStorage.setItem('user', JSON.stringify(user));
       
       // Redirect to new HTML page
-      window.location.href = "userDetails.html";  // Adjust this URL if needed
+      window.location.href = "home.html";  // Redirect to the user details page
       })
       .catch((error) => {
         const errorCode = error.code;

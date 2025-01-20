@@ -28,31 +28,33 @@ signInButton.addEventListener('click', async () => {
     const result = await signInWithPopup(auth, provider);  // Sign-in
     const user = result.user;
     console.log("Authenticated user:", user.uid);  // Log authenticated user's UID
-    alert("Logged in successfully with Google!");
-    
+    // alert("Logged in successfully with Google!");
+
     // Store user details in Firestore
     const userRef = doc(db, 'users', user.uid);
     const userDetails = {
       name: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
-      age: '',  // Store the user's age here
-      mobileNumber: '',  // Store the user's mobile number here
+      
     };
-    
-    // sessionStorage.setItem('userUID', user.uid);  // Save UID in sessionStorage
+
+    sessionStorage.setItem('userUID', user.uid);  // Save UID in sessionStorage
+    console.log("Saving user details to Firestore...");
 
     // Save user details to Firestore
-    // await setDoc(userRef, userDetails);
+    await setDoc(userRef, userDetails);
+    console.log("User details saved to Firestore!");
+
+    // alert("User details saved successfully!");
 
     // Redirect to user details page
     window.location.href = "userDetails.html";  // Redirect after sign-in
 
   } catch (error) {
+    console.error("Error during sign-in:", error);  // Log detailed error
     const errorCode = error.code;
     const errorMessage = error.message;
-    console.error(errorCode, errorMessage);
+    alert(`Sign-in failed: ${errorMessage}`);
   }
 });
-
-

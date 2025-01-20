@@ -5,16 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Details</title>
   <script type="module" src="userDetails.js"></script> <!-- Include the external JS file -->
+  <link rel="stylesheet" href="style.css"> <!-- Link to the updated external CSS file -->
 </head>
 <body>
-  <h1>User Details</h1>
+  <!-- <h1>User Details</h1> -->
   
-  <div>
-    <img id="userPhoto" src="" alt="User Photo" width="100" />
-    <p>Name: <span id="userName">Not provided</span></p>
-    <p>Email: <span id="userEmail">Not provided</span></p>
-    <p>Age: <span id="userAge">Not provided</span></p>
-    <p>Mobile: <span id="userMobile">Not provided</span></p>
+  <div class="profile">
+    <!-- <p id="profiledetails">Profile</p> -->
+    <img id="userPhoto" src="" alt="User Photo" width="100%" />
+    <p id="userName">Not provided</p>   
+     <p class="profiledetails"><span  class="users" id="role">Not provided</span></p>
+
+    <p class="profiledetails"><span  class="users" id="userEmail">Not provided</span></p>
+    <p class="profiledetails">Date of Birth: <span  class="users" id="dob">Not provided</span></p>
+
+    <!-- <p class="profiledetails">Age: <span class="users"  id="userAge">Not provided</span></p> -->
+    <p class="profiledetails">Mobile: <span  class="users" id="userMobile">Not provided</span></p>
+
+    <button id="mobile" onclick="window.location.href='mobile.html'">Update Mobile</button>
   </div>
+  <style>
+    body{
+      background-image: url(background_in_space.webp);
+    }
+  </style>
 </body>
 </html>

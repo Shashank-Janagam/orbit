@@ -16,6 +16,38 @@ display: flex; /* Use flexbox to arrange the buttons */
 
 
 }
+
+
+
+#userDetailsContainer {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+/*   
+
+  
+  /* User Info */
+  #userName, #userEmail, #userAge, #userMobile,#dob {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  #userName span, #userEmail span, #userAge span, #userMobile span {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  /* Button */
+
+  
+  
+
 #googlesign{
     background-color: transparent;
     border: none;
@@ -28,7 +60,7 @@ display: flex; /* Use flexbox to arrange the buttons */
   }
   
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],input[type='mobile'] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -49,6 +81,7 @@ display: flex; /* Use flexbox to arrange the buttons */
     cursor: pointer;
     width: 100%;
   } */
+  
   
   button:hover {
     opacity: 0.9;
@@ -211,7 +244,7 @@ transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s eas
 }
 
 /* Hover effect for LogIn, SignUp, and Google buttons */
-#login:hover, #signup:hover, .google:hover {
+#login:hover, #signup:hover, .google:hover ,#mobile:hover{
 transform: scale(1.1); /* Slight zoom effect */
 background-color: #04AA6D; /* Darker green */
 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
@@ -223,7 +256,7 @@ background-color: #f1f1f1; /* Light grey background for Google button */
 }
 
 /* Focus animation for buttons */
-#login:focus, #signup:focus, .google:focus {
+#login:focus, #signup:focus, .google:focus,#mobile:focus {
 outline: none; /* Remove outline */
 border: 2px solid #04AA6D; /* Highlight border */
 transform: scale(1.05); /* Slight zoom effect */
@@ -239,6 +272,13 @@ transition: transform 0.6s ease;
 #pass {
     display: flex; /* Use flexbox to arrange items horizontally */
     justify-content: space-between; /* Add space between the box and button */
+    align-items: center; /* Align items vertically in the center */
+    gap: 10px;
+    padding-top: 15px;
+}
+#pass2 {
+    /* display: flex; Use flexbox to arrange items horizontally */
+    /* justify-content: space-between; Add space between the box and button */
     align-items: center; /* Align items vertically in the center */
     gap: 10px;
     padding-top: 15px;
@@ -296,7 +336,30 @@ button[type="submit"] {
     /* padding-top: 20px; */
 }
 
-button[type="submit"]:hover {
+
+
+button[type="submit2"] {
+    /* padding: 8px 35px; Add padding for box appearance */
+    text-decoration: none; /* Remove underline */
+    
+    font-size: 20px; /* Adjust font size */
+    color: white; /* Text color */
+    background-color: #04AA6D; /* Box background color */
+    border-radius: 5px; /* Rounded corners */
+    font-weight: bold; /* Bold text */
+    text-align: center; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add smooth hover effect */
+    border: none;
+    /* margin:0; */
+    height:52px;
+    width: 145px;
+    /* padding-top: 20px; */
+    /* padding-left: 20px; */
+}
+
+button[type="submit2"]:hover {
     background-color: #038c5a; /* Darker green on hover */
     transform: scale(1.05); /* Slight zoom effect */
 }
@@ -348,4 +411,91 @@ input {
     animation: shake 0.4s ease-in-out;
     /* border-color: red; Optional: Highlight the input in red */
   }
+#mobile{
+background-color: #04AA6D;
+border-radius: 15px;
+/* width: 17%; */
+height: 47.5px;
+color: white;
+
+
+border:none;
+
+/* left: 50%; */
+
+font-weight: 700;
+margin-top: 30px !important;
+font-size: 20px;
+text-align: center;
+/* padding-left: 90px; 
+padding-right: 90px; */
+width: 18vmax;
+/* height: 47.5px; */
+font-style: italic;
+
+  }
+
+
+  .loading {
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loading:after {
+    content: '';
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+  }
+
+
+  .profile {
+    /* padding-top: 10%; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+    background-color: #fff;
+    padding: 20px;
+    /* padding-top: 10%; */
+    margin-top: 10%;
+    border-radius: 8px;
+  }
   
+  /* Image */
+  #userPhoto {
+    border-radius: 50%;
+    /* margin-bottom: 20px; */
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  /* User Info */
+  #userName {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .profiledetails {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+
+  }
+  .users{
+    /* text-emphasis-color: black; */
+  }

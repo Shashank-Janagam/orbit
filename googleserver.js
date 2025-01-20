@@ -62,7 +62,7 @@ signInButton.addEventListener('click', async () => {
       // await setDoc(userRef, { photoURL: user.photoURL }, { merge: true });
 
       // If user already exists, redirect to the user details page
-      window.location.href = "userDetails.html";  // Redirect to the user details page
+      window.location.href = "home.html";  // Redirect to the user details page
     }
 
   } catch (error) {

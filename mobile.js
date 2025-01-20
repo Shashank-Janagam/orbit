@@ -36,14 +36,15 @@ document.getElementById('updatebutton').addEventListener('click', async () => {
       try {
         // Ensure the document exists and update the mobile number
         await setDoc(userRef, { mobileNumber: mobileInput }, { merge: true });
+        
         alert("Mobile number updated successfully!");
+
+        // Redirect to the user details page after updating
         window.location.href = "userDetails.html"; 
 
       } catch (error) {
         console.error("Error updating mobile number:", error);
         alert("Failed to update mobile number. Please try again.");
-        window.location.href = "userDetails.html"; 
-
       }
     }
   });

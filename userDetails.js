@@ -42,8 +42,8 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById("userName").innerText = userData.name || "Not provided";
         document.getElementById("userEmail").innerText = userData.email || "Not provided";
         document.getElementById("userPhoto").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
-        document.getElementById("dob").innerText = userData.Dob;
-        document.getElementById("userMobile").innerText = userData.mobileNumber || "Not provided";
+        document.getElementById("dob").innerText = "Date of birth: "+userData.Dob;
+        document.getElementById("userMobile").innerText = "Mobile: "+userData.mobileNumber || "Not provided";
         document.getElementById('role').innerText=userData.Role|| "Not Provided";
         console.log(userData.age);
       } else {

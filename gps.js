@@ -31,8 +31,8 @@ function haversine(lat1, lon1, lat2, lon2) {
   
   // Function to get current location and check if it's within the target radius
   function getLocationAndCheckRadius() {
-    const targetLat = 17.211623; // Example target latitude (Office location)
-    const targetLon = 78.603460; // Example target longitude (Office location)
+    const targetLat = 17.1973511; // Example target latitude (Office location)
+    const targetLon = 78.5984766; // Example target longitude (Office location)
     const radius = 0.05; // Radius in kilometers (50 meters)
   
     const defaultLocation = { lat: targetLat, lng: targetLon };

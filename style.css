@@ -393,11 +393,25 @@ input {
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
   }
+
+  #change{
+    /* justify-content: center;
+     */
+     align-items: center;
+    display: flex;
+    gap: 10px;
+    width: 90%;
+    margin-top: 1%;
+    margin-left: 1vmax;
+  }
+
   
   input.shake {
     animation: shake 0.3s ease-in-out;
     
   }
+
+
   
 
   /* Default input styling */
@@ -554,3 +568,33 @@ font-style: italic;
   .users{
     /* text-emphasis-color: black; */
   }
+  .orbit1{
+    font-family: 'Source Sans Pro', sans-serif; /* Apply font to the entire page */
+/* font-size: 12vmax; */
+/* font-weight: 700; */
+text-align: center;
+font-style: italic;
+color: white;
+
+
+        font-size:50px;
+        /* position:fixed; */
+        /* justify-content: center; */
+        /* padding-left: 45%; */
+
+font-family: "Dancing Script", serif;
+font-optical-sizing: 90px;
+font-weight:700;
+/* margin-top: 10px; */
+font-style: normal;
+margin-left: 42%;
+  }
+  @media (max-width: 768px) {
+    
+    .orbit1{
+      
+      margin-left: 12vmax;
+
+    }
+   
+}

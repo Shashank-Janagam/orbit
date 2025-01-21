@@ -25,6 +25,7 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) {
     console.log("No user is authenticated!");
     alert("Please sign in to proceed.");
+    window.location.href="index.html";
   } else {
     console.log("Authenticated user:", user.uid);
 

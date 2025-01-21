@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const user = userCredential.user;
           console.log(user);
           alert("Signed up successfully!");
+          window.location.href = "home.html";  // Redirect to the user details page
+          
+
         })
         .catch((error) => {
           const errorCode = error.code;

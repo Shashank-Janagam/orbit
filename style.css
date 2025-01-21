@@ -407,7 +407,7 @@ input {
     animation: shake 0.4s ease-in-out;
     /* border-color: red; Optional: Highlight the input in red */
   }
-#mobile{
+#mobile,#logout{
 background-color: #04AA6D;
 border-radius: 15px;
 /* width: 17%; */

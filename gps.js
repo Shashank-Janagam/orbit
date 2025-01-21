@@ -45,7 +45,7 @@ function haversine(lat1, lon1, lat2, lon2) {
         zoom: 16,
       });
   
-    if (navigator.geolocation) {
+    if (navigator.geolocation){
       navigator.geolocation.getCurrentPosition(
         position => {
           const currentLat = position.coords.latitude;

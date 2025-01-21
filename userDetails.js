@@ -2,6 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { signOut } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -20,11 +21,33 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app); // Initialize Firestore
 
+
+const logoutButton = document.getElementById('logoutButton');
+
+// Add an event listener to the logout button
+logoutButton.addEventListener('click', async () => {
+  try {
+    await signOut(auth); // Sign out the user
+    console.log("User successfully logged out.");
+    
+    // Clear sessionStorage
+    sessionStorage.removeItem('userUID');
+    
+    // Redirect to the login page
+    window.location.href = "index.html";
+  } catch (error) {
+    console.error("Error during logout:", error);
+    alert("Logout failed. Please try again.");
+  }
+});
+
+
 // Check if user is authenticated
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     console.log("No user is authenticated!");
-    alert("Please sign in to proceed.");
+    // alert("Please sign in to proceed.");
+    window.location.href="index.html";
   } else {
     console.log("Authenticated user:", user.uid);
 
@@ -36,7 +59,7 @@ onAuthStateChanged(auth, async (user) => {
       if (userDoc.exists()) {
         // User data exists, retrieve and display it
         const userData = userDoc.data();
-        console.log("User data:", userData);
+        // console.log("User data:", userData);
 
         // Display the data on the page
         document.getElementById("userName").innerText = userData.name || "Not provided";

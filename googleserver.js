@@ -2,7 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
-
+import { signOut } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
@@ -27,13 +27,15 @@ signInButton.addEventListener('click', async () => {
   try {
     const result = await signInWithPopup(auth, provider);  // Sign-in
     const user = result.user;
-    console.log("Authenticated user:", user.uid);  // Log authenticated user's UID
+
+    // console.log("Authenticated user:", user.uid);  // Log authenticated user's UID
 
     // Reference to the user document in Firestore
     const userRef = doc(db, 'users', user.uid);
 
     // Check if the user already exists in Firestore
     const userDoc = await getDoc(userRef);  // Fetch the user document
+    // const e=user.email;
 
     if (!userDoc.exists()) {  // If user data does not exist
       console.log("User not found in Firestore, saving details...");

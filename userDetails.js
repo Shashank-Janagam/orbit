@@ -3,6 +3,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+
 
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -40,6 +42,53 @@ logoutButton.addEventListener('click', async () => {
     alert("Logout failed. Please try again.");
   }
 });
+
+const resetPasswordButton = document.getElementById('reset');
+resetPasswordButton.addEventListener('click', async (e) => {
+  e.preventDefault();
+  onAuthStateChanged(auth, async (user) => {
+
+  const userRef = doc(db, "users", user.uid); // Reference to the user's document
+  const userDoc = await getDoc(userRef);
+  const userData = userDoc.data();
+
+
+
+  // const emailInput = document.getElementById('resetEmail');
+  const email = userData.email;
+
+  const triggerShake = (input) => {
+    input.classList.remove('shake');
+    void input.offsetWidth; // Trigger a reflow
+    input.classList.add('shake');
+  };
+
+  if (!email) {
+    alert("Please enter your registered email.");
+    triggerShake(emailInput);
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset link sent to your email!");
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    const errorCode = error.code;
+
+    if (errorCode === 'auth/user-not-found') {
+      alert("No account found with this email.");
+    } else if (errorCode === 'auth/invalid-email') {
+      alert("Invalid email address. Please check and try again.");
+      triggerShake(emailInput);
+    } else {
+      alert(`Error: ${error.message}`);
+    }
+  }})
+});
+
+
+
 
 
 // Check if user is authenticated

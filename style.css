@@ -55,8 +55,20 @@ display: flex; /* Use flexbox to arrange the buttons */
     text-align: center;
   }
   
+  input[type='mobile']{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border:1px solid #d4d1d3;
+    border-radius: 7px;
+    box-sizing: border-box;
+    border-color: white;
+    height: 40px;
+    padding: 0 10px;
+
+  }
   input[type="email"],
-  input[type="password"],input[type='mobile'] {
+  input[type="password"],input[type='name'] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -407,7 +419,7 @@ input {
     animation: shake 0.4s ease-in-out;
     /* border-color: red; Optional: Highlight the input in red */
   }
-#mobile,#logout{
+#mobile{
 background-color: #04AA6D;
 border-radius: 15px;
 /* width: 17%; */
@@ -428,6 +440,53 @@ padding-right: 90px; */
 width: 18vmax;
 /* height: 47.5px; */
 font-style: italic;
+
+  }
+  #reset{
+    background-color: #ef8888;
+border-radius: 15px;
+/* width: 17%; */
+height: 47.5px;
+color: white;
+
+
+border:none;
+
+/* left: 50%; */
+
+font-weight: 700;
+margin-top: 30px !important;
+font-size: 11px;
+text-align: center;
+/* padding-left: 90px; 
+padding-right: 90px; */
+width: 18vmax;
+/* height: 47.5px; */
+font-style: italic;
+
+  }
+  #logoutButton{
+    background-color: #ef8888;
+border-radius: 15px;
+/* width: 17%; */
+height: 47.5px;
+color: white;
+
+
+border:none;
+
+/* left: 50%; */
+
+font-weight: 700;
+margin-top: 30px !important;
+font-size: 20px;
+text-align: center;
+/* padding-left: 90px; 
+padding-right: 90px; */
+width: 18vmax;
+/* height: 47.5px; */
+font-style: italic;
+
 
   }
 
@@ -466,7 +525,7 @@ font-style: italic;
     background-color: #fff;
     padding: 20px;
     /* padding-top: 10%; */
-    margin-top: 10%;
+    margin-top:5%;
     border-radius: 8px;
   }
   

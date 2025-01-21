@@ -45,6 +45,8 @@ document.getElementById('updatebutton').addEventListener('click', async () => {
       } catch (error) {
         console.error("Error updating mobile number:", error);
         alert("Failed to update mobile number. Please try again.");
+        window.location.href = "userDetails.html"; 
+
       }
     }
   });

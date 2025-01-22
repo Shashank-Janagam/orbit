@@ -1,105 +1,111 @@
-// Haversine formula to calculate the distance between two coordinates (in kilometers)
-function haversine(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-  
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
+// Function to check if a point is within a polygon (box)
+function isPointInPolygon(point, polygon) {
+  const x = point.lat;
+  const y = point.lng;
+  let inside = false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].lat, yi = polygon[i].lng;
+    const xj = polygon[j].lat, yj = polygon[j].lng;
+
+    const intersect = ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
   }
-  
-  // Function to draw a radius circle on the map
-  function drawRadius(map, targetLocation, radiusInKm) {
-    const circle = new google.maps.Circle({
-      center: targetLocation, // Center of the circle
-      radius: radiusInKm * 1000, // Radius in meters
-      map: map, // The map instance
-      fillColor: "#0000FF", // Fill color of the circle
-      fillOpacity: 0.2, // Transparency of the fill
-      strokeColor: "#0000FF", // Outline color of the circle
-      strokeOpacity: 0.8, // Transparency of the outline
-      strokeWeight: 2, // Thickness of the outline
-      title: "Your Office Radius"
-    });
-  
-    return circle;
-  }
-  
-  // Function to get current location and check if it's within the target radius
-  function getLocationAndCheckRadius() {
-    const targetLat = 17.1973511; // Example target latitude (Office location)
-    const targetLon = 78.5984766; // Example target longitude (Office location)
-    const radius = 0.05; // Radius in kilometers (50 meters)
-  
-    const defaultLocation = { lat: targetLat, lng: targetLon };
-    const map = new google.maps.Map(document.getElementById("map"), {
-      center: defaultLocation,
-      zoom: 16,
-    });
-    const map2 = new google.maps.Map(document.getElementById("map2"), {
-        center: defaultLocation,
-        zoom: 16,
-      });
-  
-    if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const currentLat = position.coords.latitude;
-          const currentLon = position.coords.longitude;
-          console.log("Your current location: Latitude:", currentLat, "Longitude:", currentLon);
-  
-          const userLocation = { lat: currentLat, lng: currentLon };
-          const targetLocation = { lat: targetLat, lng: targetLon };
-  
-          // Create a marker for the user's location
-          new google.maps.Marker({
-            position: userLocation,
-            map: map2,
-            title: "You are here",
-          });
-  
-          // Create a marker for the target location (Office)
-          new google.maps.Marker({
-            position: targetLocation,
-            map: map,
-            title: "Office Location",
-          });
+
+  return inside;
+}
+
+// Function to draw a polygon (box) on the map
+function drawPolygon(map, polygon) {
+  const path = polygon.map(point => ({ lat: point.lat, lng: point.lng }));
+  new google.maps.Polygon({
+    paths: path,
+    map: map,
+    fillColor:"#18aff1",
+    fillOpacity: 0.5,
+    strokeColor: "#18aff1",
+    strokeOpacity: 1,
+    strokeWeight: 2,
+    title: "Office Area"
+  });
+}
+
+// Function to get current location and check if it's within the polygon
+function getLocationAndCheckPolygon() {
+  const polygon = [
+    { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
+    { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
+    { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
+    { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
+
+    // { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
+    // { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
+    // { lat: 17.2117314, lng: 78.6037210}, // Bottom-right corner
+    // { lat: 17.2115746, lng: 78.6036443 } 
+  ]; // Replace with your fixed office coordinates
+
+  const defaultLocation = { lat: polygon[0].lat, lng: polygon[0].lng };
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: defaultLocation,
+    zoom: 18,
+    // mapTypeId: google.maps.MapTypeId.SATELLITE, // Set the map to Satellite view
+    
+  });
+  const map2 = new google.maps.Map(document.getElementById("map2"), {
+    center: defaultLocation,
+    zoom: 16,
+    // mapTypeId: google.maps.MapTypeId.SATELLITE, // Set to satellite view
+  });
+
+  drawPolygon(map, polygon);
+  drawPolygon(map2, polygon);
 
 
-  
-          // Draw the radius circle on the map
-          drawRadius(map, targetLocation, radius);
-  
-          // Calculate the distance between the current location and target location
-          const distance = haversine(currentLat, currentLon, targetLat, targetLon);
-          document.getElementById("radi").textContent ="Your at a Distance "+ distance.toFixed(2) + " km";
-  
-          // Check if the user is within the specified radius
-          if (distance <= radius) {
-            document.getElementById("result").textContent = "You are within the range of your Office";
-            console.log("You are within the target radius of " + radius + " km.");
-          } else {
-            document.getElementById("result").textContent = "You are not within your Office Range";
-            console.log("You are outside the target radius of " + radius + " km.");
-          }
-  
-          map.setCenter(targetLocation); // Set map center to the office location
-          map2.setCenter(userLocation);
-        },
-        error => {
-          console.error("Error getting location:", error);
-          alert("There was an error retrieving your location. Please enable location services and try again.");
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+      position => {
+        const currentLat = position.coords.latitude;
+        const currentLon = position.coords.longitude;
+        console.log("Your current location: Latitude:", currentLat, "Longitude:", currentLon);
+
+        const userLocation = { lat: currentLat, lng: currentLon };
+        // Create a custom icon for the user's location (blue dot)
+
+        // Create a marker for the user's location
+        new google.maps.Marker({
+          position: userLocation,
+          map: map2,
+          title: "You are here",
+          // icon: userLocationIcon,
+          
+        });
+        const targetLocation=polygon;
+
+        
+
+        // Check if the user is within the polygon
+        const inside = isPointInPolygon(userLocation, polygon);
+        if (inside) {
+          document.getElementById("result").textContent = "You are within the office range.";
+          console.log("You are within the polygon area.");
+        } else {
+          document.getElementById("result").textContent = "You are outside the office range.";
+          console.log("You are outside the polygon area.");
         }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+
+        map2.setCenter(userLocation); // Set map center to the user's location
+        map.setCenter(targetLocation);
+      },
+      error => {
+        console.error("Error getting location:", error);
+        alert("There was an error retrieving your location. Please enable location services and try again.");
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
   }
-  
-  // Call the function to get location and check if within the radius
-  getLocationAndCheckRadius();
-  
+}
+
+// Call the function to get location and check polygon
+getLocationAndCheckPolygon();

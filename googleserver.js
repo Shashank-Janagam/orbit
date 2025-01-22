@@ -44,6 +44,7 @@ signInButton.addEventListener('click', async () => {
         name: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
+        EmployeeID:user.email.replace("@gmail.com",""),
       };
 
       // Save user details to Firestore
@@ -51,7 +52,7 @@ signInButton.addEventListener('click', async () => {
       console.log("User details saved to Firestore!");
       
       // Save UID in sessionStorage
-      sessionStorage.setItem('userUID', user.uid);  
+      localStorage.setItem('userUID', userId); // Save the user ID
       
       // Redirect to user details page after saving
       window.location.href = "userDetails.html"; 
@@ -62,6 +63,7 @@ signInButton.addEventListener('click', async () => {
       // You can choose to update user details if needed, e.g., updating the profile photo if changed
       // Example of updating user's photoURL:
       // await setDoc(userRef, { photoURL: user.photoURL }, { merge: true });
+      localStorage.setItem('userUID', userId); // Save the user ID
 
       // If user already exists, redirect to the user details page
       window.location.href = "home.html";  // Redirect to the user details page

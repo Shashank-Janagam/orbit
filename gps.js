@@ -139,7 +139,7 @@ getLocationAndCheckPolygon();
 async function logAttendance() {
   try {
     const collectionName = "company/Microsoft/Attendance"; // Firestore collection for attendance
-    const userId = sessionStorage.getItem('userUID');
+    const userId = localStorage.getItem('userUID'); // Retrieve the user ID
 
 
      

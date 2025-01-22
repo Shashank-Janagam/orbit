@@ -53,15 +53,15 @@ function drawPolygon(map, polygon) {
 // Function to get current location and check if it's within the polygon
 function getLocationAndCheckPolygon() {
   const polygon = [
-    { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
-    { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
-    { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
-    { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
+    // { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
+    // { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
+    // { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
+    // { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
 
-    // { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
-    // { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
-    // { lat: 17.2117314, lng: 78.6037210}, // Bottom-right corner
-    // { lat: 17.2115746, lng: 78.6036443 } 
+    { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
+    { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
+    { lat: 17.2117314, lng: 78.6037210}, // Bottom-right corner
+    { lat: 17.2113842, lng: 78.6035983}, // Bottom-right corner
   ]; // Replace with your fixed office coordinates
 
   const defaultLocation = { lat: polygon[0].lat, lng: polygon[0].lng };
@@ -80,6 +80,8 @@ function getLocationAndCheckPolygon() {
   drawPolygon(map, polygon);
   drawPolygon(map2, polygon);
 
+// setInterval(() => {
+  
 
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
@@ -114,7 +116,7 @@ function getLocationAndCheckPolygon() {
         } else {
           document.getElementById("result").textContent = "You are outside the office range.";
           console.log("You are outside the polygon area.");
-          logAttendance(); // Replace "user123" with the actual user ID
+          // logAttendance(); // Replace "user123" with the actual user ID
 
         }
 
@@ -129,6 +131,7 @@ function getLocationAndCheckPolygon() {
   } else {
     alert("Geolocation is not supported by this browser.");
   }
+// }, 5000);
 }
 
 // Call the function to get location and check polygon
@@ -197,3 +200,9 @@ async function logAttendance() {
     console.error("Error logging attendance:", error);
   }
 }
+
+// Automatically reload the page every 10 seconds
+setInterval(() => {
+  location.reload();
+}, 10000); // 10000 milliseconds = 10 seconds
+

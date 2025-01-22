@@ -53,15 +53,15 @@ function drawPolygon(map, polygon) {
 // Function to get current location and check if it's within the polygon
 function getLocationAndCheckPolygon() {
   const polygon = [
-    // { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
-    // { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
-    // { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
-    // { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
+    { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
+    { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
+    { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
+    { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
 
-    { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
-    { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
-    { lat: 17.2117314, lng: 78.6037210}, // Bottom-right corner
-    { lat: 17.2113842, lng: 78.6035983}, // Bottom-right corner
+    // { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
+    // { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
+    // { lat: 17.2117314, lng: 78.6037210}, // Bottom-right corner
+    // { lat: 17.2113842, lng: 78.6035983}, // Bottom-right corner
   ]; // Replace with your fixed office coordinates
 
   const defaultLocation = { lat: polygon[0].lat, lng: polygon[0].lng };

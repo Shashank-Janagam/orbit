@@ -1,6 +1,7 @@
 // Function to check if a point is within a polygon (box)
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getFirestore, doc,getDoc, setDoc,Timestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
@@ -135,69 +136,64 @@ getLocationAndCheckPolygon();
 
 
 
-
 async function logAttendance() {
   try {
     const collectionName = "company/Microsoft/Attendance"; // Firestore collection for attendance
-    const userId = localStorage.getItem('userUID'); // Retrieve the user ID
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is logged in:", user.uid);
+
+        // Create an async function inside the callback
+        (async () => {
+          const userRef = doc(db, "users", user.uid); // Reference to the user's document
+
+          try {
+            const userDoc = await getDoc(userRef);
+
+            if (userDoc.exists()) {
+              // User data exists, retrieve and display it
+              const userData = userDoc.data();
+              const currentDate = new Date();
+
+              const year = currentDate.getFullYear();
+              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
+              const date = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+              console.log("Local date:", date);
 
 
-     
-        console.log("Authenticated user:", userId);
-    
-        // Now, fetch user data from Firestore
-        const userRef = doc(db, "users", userId); // Reference to the user's document
-        try {
-          const userDoc = await getDoc(userRef);
-          
-          if (userDoc.exists()) {
-            // User data exists, retrieve and display it
-            const userData = userDoc.data(); 
-            const currentDate = new Date();
-            const date = currentDate.toISOString().split("T")[0]; // Extracts YYYY-MM-DD
-            // const date1 = currentDate.toISOString().split("T")[0]; // Extracts YYYY-MM-DD
+              const hours = String(currentDate.getHours()).padStart(2, "0");
+              const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+              const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+              const time = `${hours}:${minutes}:${seconds}`;
+              // console.log(currentDate.split("T")[0]);
 
-// Extracts HH:MM:SS (ensures 2-digit formatting)
-            const hours = String(currentDate.getHours()).padStart(2, '0');
-            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-            const time = `${hours}:${minutes}:${seconds}`;
-            
-            const docId = `${userData.EmployeeID}_${currentDate.toISOString().split("T")[0]}`;
+              const docId = `${userData.EmployeeID}_${date}`;
+              console.log(docId);
+              const attendanceData = {
+                EmployeeID: userData.EmployeeID,
+                Role: userData.Role,
+                Date: date,
+                Time: time,
+                attendanceTime: Timestamp.fromDate(currentDate),
+              };
 
-             const attendanceData = {
-
-            EmployeeID:userData.EmployeeID,
-              Role:userData.Role,
-             Date: date,
-             Time:time,
-
-            attendanceTime: Timestamp.fromDate(currentDate),
-    };
-    
-    await setDoc(doc(db, collectionName, docId), attendanceData);
-
-    console.log("Attendance logged successfully!");
-            
-          } else {
-            console.log("No user data found in Firestore.");
+              await setDoc(doc(db, collectionName, docId), attendanceData);
+              console.log("Attendance logged successfully!");
+            } else {
+              console.log("No user data found in Firestore.");
+            }
+          } catch (error) {
+            console.error("Error fetching user data from Firestore:", error);
           }
-        } catch (error) {
-          console.error("Error fetching user data from Firestore:", error);
-        }
-      
-
-    // Generate a unique ID for the document, such as combining userId and date
-   
-
-    // Create the attendance data
-   
-
-    // Add the attendance data to Firestore
-    
+        })(); // Immediately invoke the async function
+      } else {
+        console.log("No user is logged in");
+      }
+    });
   } catch (error) {
     console.error("Error logging attendance:", error);
   }
 }
-
-// Example Usage: Call the function with the user ID

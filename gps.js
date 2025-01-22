@@ -204,5 +204,5 @@ async function logAttendance() {
 // Automatically reload the page every 10 seconds
 setInterval(() => {
   location.reload();
-}, 10000); // 10000 milliseconds = 10 seconds
+}, 30000); // 10000 milliseconds = 10 seconds
 

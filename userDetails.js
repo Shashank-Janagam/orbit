@@ -116,7 +116,9 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById("userPhoto").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
         document.getElementById("dob").innerText = "Date of birth: "+userData.Dob;
         document.getElementById("userMobile").innerText = "Mobile: "+userData.mobileNumber || "Not provided";
-        document.getElementById('role').innerText=userData.Role|| "Not Provided";
+        document.getElementById('role').innerText=userData.Role|| "";
+        document.getElementById('company').innerText=userData.Company|| "";
+
         console.log(userData.age);
       } else {
         console.log("No user data found in Firestore.");

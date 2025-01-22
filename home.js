@@ -20,6 +20,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app); // Initialize Firestore
 
+
 // Check if user is authenticated
 onAuthStateChanged(auth, async (user) => {
   if (!user) {

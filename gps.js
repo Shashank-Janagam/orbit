@@ -1,4 +1,22 @@
 // Function to check if a point is within a polygon (box)
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+import { getFirestore, doc,getDoc, setDoc,Timestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
+  authDomain: "geo-orbit-ed7a7.firebaseapp.com",
+  databaseURL: "https://geo-orbit-ed7a7-default-rtdb.firebaseio.com",
+  projectId: "geo-orbit-ed7a7",
+  storageBucket: "geo-orbit-ed7a7.firebasestorage.app",
+  messagingSenderId: "807202826514",
+  appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
+  measurementId: "G-H15DN69132"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+
 function isPointInPolygon(point, polygon) {
   const x = point.lat;
   const y = point.lng;
@@ -89,9 +107,14 @@ function getLocationAndCheckPolygon() {
         if (inside) {
           document.getElementById("result").textContent = "You are within the office range.";
           console.log("You are within the polygon area.");
+          logAttendance(); // Replace "user123" with the actual user ID
+
+
         } else {
           document.getElementById("result").textContent = "You are outside the office range.";
           console.log("You are outside the polygon area.");
+          logAttendance(); // Replace "user123" with the actual user ID
+
         }
 
         map2.setCenter(userLocation); // Set map center to the user's location
@@ -109,3 +132,72 @@ function getLocationAndCheckPolygon() {
 
 // Call the function to get location and check polygon
 getLocationAndCheckPolygon();
+
+
+
+
+async function logAttendance() {
+  try {
+    const collectionName = "company/Microsoft/Attendance"; // Firestore collection for attendance
+    const userId = sessionStorage.getItem('userUID');
+
+
+     
+        console.log("Authenticated user:", userId);
+    
+        // Now, fetch user data from Firestore
+        const userRef = doc(db, "users", userId); // Reference to the user's document
+        try {
+          const userDoc = await getDoc(userRef);
+          
+          if (userDoc.exists()) {
+            // User data exists, retrieve and display it
+            const userData = userDoc.data(); 
+            const currentDate = new Date();
+            const date = currentDate.toISOString().split("T")[0]; // Extracts YYYY-MM-DD
+            // const date1 = currentDate.toISOString().split("T")[0]; // Extracts YYYY-MM-DD
+
+// Extracts HH:MM:SS (ensures 2-digit formatting)
+            const hours = String(currentDate.getHours()).padStart(2, '0');
+            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+            const time = `${hours}:${minutes}:${seconds}`;
+            
+            const docId = `${userData.EmployeeID}_${currentDate.toISOString().split("T")[0]}`;
+
+             const attendanceData = {
+
+            EmployeeID:userData.EmployeeID,
+              Role:userData.Role,
+             Date: date,
+             Time:time,
+
+            attendanceTime: Timestamp.fromDate(currentDate),
+    };
+    
+    await setDoc(doc(db, collectionName, docId), attendanceData);
+
+    console.log("Attendance logged successfully!");
+            
+          } else {
+            console.log("No user data found in Firestore.");
+          }
+        } catch (error) {
+          console.error("Error fetching user data from Firestore:", error);
+        }
+      
+
+    // Generate a unique ID for the document, such as combining userId and date
+   
+
+    // Create the attendance data
+   
+
+    // Add the attendance data to Firestore
+    
+  } catch (error) {
+    console.error("Error logging attendance:", error);
+  }
+}
+
+// Example Usage: Call the function with the user ID

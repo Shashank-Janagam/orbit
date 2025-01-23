@@ -52,7 +52,7 @@ signInButton.addEventListener('click', async () => {
               email: user.email,
               photoURL: user.photoURL,
               EmployeeID:user.email.replace("@gmail.com",""),
-              Role:"",
+              Role:"Employee",
             };
       
             // Save user details to Firestore

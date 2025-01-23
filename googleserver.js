@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup ,deleteUser} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, doc,getDoc,collection, getDocs, query, where ,setDoc} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, deleteUser } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -20,9 +20,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app); // Initialize Firestore
 
-// Google Sign-In button functionality
-const signInButton = document.getElementById('googlesign');
-signInButton.addEventListener('click', async () => {
+// Function to handle Google Sign-In
+async function handleSignIn() {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider); // Sign-in
@@ -30,71 +29,68 @@ signInButton.addEventListener('click', async () => {
 
     // Query the allowedUsers collection for the authenticated user's UID
     const allowedUsersRef = collection(db, 'allowedUsers');
-    const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com","")));
+    const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com", "")));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
 
+      const data1 = querySnapshot.docs[0].data();
 
-          const data1=querySnapshot.docs[0].data();
+      const userRef = doc(db, 'users', user.uid);
 
-          const userRef = doc(db, 'users', user.uid);
-      
-          // Check if the user already exists in Firestore
-          const userDoc = await getDoc(userRef);  // Fetch the user document
-          // const e=user.email;
-      
-          if (!userDoc.exists()) {  // If user data does not exist
-            console.log("User not found in Firestore, saving details...");
-      
-            const userDetails = {
-              name: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              EmployeeID:user.email.replace("@gmail.com",""),
-              Role:"Employee",
-              Company:data1.company,
-            };
-      
-            // Save user details to Firestore
-            await setDoc(userRef, userDetails);
-            console.log("User details saved to Firestore!");
-            
-            // Save UID in sessionStorage
-            sessionStorage.setItem('userUID', user.uid); // Save the user ID
-            
-            // Redirect to user details page after saving
-            window.location.href = "userDetails.html"; 
-      
-          } else {
-            console.log("User already exists in Firestore, no need to save again.");
-            
-            // You can choose to update user details if needed, e.g., updating the profile photo if changed
-            // Example of updating user's photoURL:
-            // await setDoc(userRef, { photoURL: user.photoURL }, { merge: true });
-            sessionStorage.setItem('userUID', user.uid); // Save the user ID
-      
-            // If user already exists, redirect to the user details page
-            window.location.href = "home.html";  // Redirect to the user details page
-          }
+      // Check if the user already exists in Firestore
+      const userDoc = await getDoc(userRef); // Fetch the user document
 
+      if (!userDoc.exists()) { // If user data does not exist
+        console.log("User not found in Firestore, saving details...");
 
+        const userDetails = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          EmployeeID: user.email.replace("@gmail.com", ""),
+          Role: "Employee",
+          Company: data1.company,
+        };
 
+        // Save user details to Firestore
+        await setDoc(userRef, userDetails);
+        console.log("User details saved to Firestore!");
 
-;
+        // Save UID in sessionStorage
+        sessionStorage.setItem('userUID', user.uid); // Save the user ID
 
-    } else { 
-          //  alert("Your account does not exist. Please contact the admin or register first.");
+        // Redirect to user details page after saving
+        window.location.href = "userDetails.html";
 
+      } else {
+        console.log("User already exists in Firestore, no need to save again.");
+
+        // Save UID in sessionStorage
+        sessionStorage.setItem('userUID', user.uid); // Save the user ID
+
+        // If user already exists, redirect to the user details page
+        window.location.href = "home.html"; // Redirect to the user details page
+      }
+
+    } else {
       console.error("User is not in the allowedUsers collection.");
       await deleteUser(user);
-      window.location.href="notuser.html";
+      window.location.href = "notuser.html";
     }
 
   } catch (error) {
     console.error("Error during sign-in:", error); // Log detailed error
     const errorMessage = error.message;
-    alert(`Sign-in failed: ${errorMessage}`);
+    // alert(`Sign-in failed: ${errorMessage}`);
+    window.location.href="index.html";
   }
-});
+}
+
+// Trigger the function on page load
+window.onload = () => {
+  setTimeout(() => {
+    handleSignIn();
+  }, 2000); // Delay for 3 seconds (3000 milliseconds)
+};

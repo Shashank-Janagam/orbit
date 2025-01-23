@@ -32,13 +32,13 @@ signInButton.addEventListener('click', async () => {
     const allowedUsersRef = collection(db, 'allowedUsers');
     const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com","")));
     const querySnapshot = await getDocs(q);
-    const data1=querySnapshot.docs[0].data();
 
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
 
 
-      
+          const data1=querySnapshot.docs[0].data();
+
           const userRef = doc(db, 'users', user.uid);
       
           // Check if the user already exists in Firestore
@@ -84,10 +84,12 @@ signInButton.addEventListener('click', async () => {
 
 ;
 
-    } else {
+    } else { 
+          //  alert("Your account does not exist. Please contact the admin or register first.");
+
       console.error("User is not in the allowedUsers collection.");
       await deleteUser(user);
-      alert("Your account does not exist. Please contact the admin or register first.");
+      window.location.href="notuser.html";
     }
 
   } catch (error) {

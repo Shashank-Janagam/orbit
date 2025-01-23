@@ -1,6 +1,6 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup ,deleteUser} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc,getDoc,collection, getDocs, query, where ,setDoc} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your actual Firebase configuration
@@ -86,6 +86,7 @@ signInButton.addEventListener('click', async () => {
 
     } else {
       console.error("User is not in the allowedUsers collection.");
+      await deleteUser(user);
       alert("Your account does not exist. Please contact the admin or register first.");
     }
 

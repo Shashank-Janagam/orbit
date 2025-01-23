@@ -12,11 +12,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Log current user immediately
-console.log("Auth current user at start:", auth.currentUser);
+// Store the user object once authenticated
+let currentUser = null;
+
+// Listen to authentication state changes and store the user
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = user;
+    console.log("Auth state changed. Current user:", user);
+  } else {
+    console.log("No user signed in.");
+    currentUser = null;
+  }
+});
 
 // Update button event listener
-document.getElementById('updatebutton').addEventListener('click', async () => {
+const update = document.getElementById('updatebutton');
+update.addEventListener('click', async () => {
   const mobileInput = document.getElementById('mobilenumber').value;
 
   if (!mobileInput) {
@@ -24,32 +36,37 @@ document.getElementById('updatebutton').addEventListener('click', async () => {
     return;
   }
 
-  // Listen for authentication state
-  onAuthStateChanged(auth, async (user) => {
-    console.log("Auth state changed. Current user:", user);
+  if (!currentUser) {
+    alert("Please sign in to update your mobile number.");
+    // window.location.href = "userDetails.html"; 
 
-    if (!user) {
-      alert("Please sign in to update your mobile number.");
-    } else {
-      console.log("Updating mobile number for user:", user.uid);
-      const userRef = doc(db, 'users', user.uid);
-      try {
-        // Ensure the document exists and update the mobile number
-        await setDoc(userRef, { mobileNumber: mobileInput }, { merge: true });
-        
-        alert("Mobile number updated successfully!");
+    return;
+  }
 
-        // Redirect to the user details page after updating
-        window.location.href = "userDetails.html"; 
+  console.log("User is authenticated. Proceeding to update mobile number.");
 
-      } catch (error) {
-        console.error("Error updating mobile number:", error);
-        alert("Failed to update mobile number. Please try again.");
-        window.location.href = "userDetails.html"; 
+  try {
+    const userRef = doc(db, 'users', currentUser.uid); // Get reference to user document
+    console.log("Firestore document reference:", userRef);
 
-      }
-    }
-  });
+    // Attempt to update the mobile number field in Firestore
+    const result = await setDoc(userRef, { mobileNumber: mobileInput }, { merge: true });
+
+    // Check if the update was successful
+    console.log("Update result:", result);  // Check if result is undefined or successful
+
+    alert("Mobile number updated successfully!");
+    console.log("Mobile number updated successfully!");
+
+
+    // Optionally, you can redirect after updating
+    window.location.href = "userDetails.html"; 
+
+  } catch (error) {
+    console.error("Error updating mobile number:", error);
+    alert("Failed to update mobile number. Please try again.");
+    // window.location.href = "userDetails.html"; 
+
+
+  }
 });
-
-

@@ -32,6 +32,7 @@ signInButton.addEventListener('click', async () => {
     const allowedUsersRef = collection(db, 'allowedUsers');
     const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com","")));
     const querySnapshot = await getDocs(q);
+    const data1=querySnapshot.docs[0].data();
 
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
@@ -53,6 +54,7 @@ signInButton.addEventListener('click', async () => {
               photoURL: user.photoURL,
               EmployeeID:user.email.replace("@gmail.com",""),
               Role:"Employee",
+              Company:data1.company,
             };
       
             // Save user details to Firestore

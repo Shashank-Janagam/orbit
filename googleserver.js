@@ -26,6 +26,7 @@ function generateDeviceID() {
   const platform = navigator.platform; // OS/platform info
   const randomSalt = "random_salt_value"; // Add a salt for uniqueness
   const rawID = `${userAgent}-${platform}-${randomSalt}`;
+  // const rawID=`${userAgent}`;
   return btoa(rawID); // Encode to create a unique identifier
 }
 
@@ -44,7 +45,7 @@ async function handleSignIn() {
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
 
-      const data1 = querySnapshot.docs[0].data();
+      // const data1 = querySnapshot.docs[0].data();
 
       const userRef = doc(db, 'users', user.uid);
 
@@ -71,7 +72,7 @@ async function handleSignIn() {
           photoURL: user.photoURL,
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Employee",
-          Company: data1.company,
+          // Company: data1.company,
           deviceID: currentDeviceID, // Store the device ID
         };
 
@@ -101,6 +102,7 @@ async function handleSignIn() {
 
   } catch (error) {
     console.error("Error during sign-in:", error);
+    alert(error);
     window.location.href = "index.html"; // Redirect to login page in case of error
   }
 }

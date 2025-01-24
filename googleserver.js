@@ -1,6 +1,6 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, deleteUser } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, collection, getDocs, query, where, setDoc, addDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your actual Firebase configuration
@@ -19,6 +19,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app); // Initialize Firestore
+
+// Function to generate a unique device identifier
+function generateDeviceID() {
+  const userAgent = navigator.userAgent; // User's browser/device info
+  const platform = navigator.platform; // OS/platform info
+  const randomSalt = "random_salt_value"; // Add a salt for uniqueness
+  const rawID = `${userAgent}-${platform}-${randomSalt}`;
+  return btoa(rawID); // Encode to create a unique identifier
+}
 
 // Function to handle Google Sign-In
 async function handleSignIn() {
@@ -42,16 +51,30 @@ async function handleSignIn() {
       // Check if the user already exists in Firestore
       const userDoc = await getDoc(userRef);
 
-      const userDetails = {
-        name: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        EmployeeID: user.email.replace("@gmail.com", ""),
-        Role: "Employee",
-        Company: data1.company,
-      };
+      // Generate the current device ID
+      const currentDeviceID = generateDeviceID();
 
-      if (!userDoc.exists()) {
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+
+        // Check if the device ID matches the stored device IDgit
+        if (userData.deviceID && userData.deviceID !== currentDeviceID) {
+          console.error("You can only log in from the device you initially used.");
+          window.location.href = "notuser.html"; // Redirect to a page showing the device restriction message
+          return;
+        }
+      } else {
+        // If the user is logging in for the first time, register their device
+        const userDetails = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          EmployeeID: user.email.replace("@gmail.com", ""),
+          Role: "Employee",
+          Company: data1.company,
+          deviceID: currentDeviceID, // Store the device ID
+        };
+
         console.log("User not found in Firestore, saving details...");
         await setDoc(userRef, userDetails);
         console.log("User details saved to Firestore!");
@@ -73,13 +96,12 @@ async function handleSignIn() {
 
     } else {
       console.error("User is not in the allowedUsers collection.");
-      await deleteUser(user);
-      window.location.href = "notuser.html";
+      window.location.href = "notuser.html"; // Redirect to a page indicating the user is not allowed
     }
 
   } catch (error) {
     console.error("Error during sign-in:", error);
-    window.location.href = "index.html";
+    window.location.href = "index.html"; // Redirect to login page in case of error
   }
 }
 
@@ -87,5 +109,5 @@ async function handleSignIn() {
 window.onload = () => {
   setTimeout(() => {
     handleSignIn();
-  }, 1000); // Delay for 2 seconds
+  }, 1000); // Delay for 1 second
 };

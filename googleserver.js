@@ -39,8 +39,12 @@ async function handleSignIn() {
 
     // Query the allowedUsers collection for the authenticated user's UID
     const allowedUsersRef = collection(db, 'allowedUsers');
+    const allowedmanagerRef=collection(db,'allowedManagers');
+
     const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com", "")));
+    const p = query(allowedmanagerRef, where('uid','==', user.email.replace("@gmail.com","")));
     const querySnapshot = await getDocs(q);
+    const pmanagers= await getDocs(p);
 
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
@@ -95,7 +99,56 @@ async function handleSignIn() {
       sessionStorage.setItem('userUID', user.uid);
       window.location.href = userDoc.exists() ? "home.html" : "userDetails.html";
 
-    } else {
+    }
+    else if(!pmanagers.empty){
+
+      console.log("Manager is allowed to log in.");
+
+      // const data1 = querySnapshot.docs[0].data();
+
+      const userRef = doc(db, 'managers', user.uid);
+
+      // Check if the user already exists in Firestore
+      const userDoc = await getDoc(userRef);
+
+      // Generate the current device ID
+      // const currentDeviceID = generateDeviceID();
+
+      if (!userDoc.exists()) {
+        
+ // If the user is logging in for the first time, register their device
+        const userDetails = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          EmployeeID: user.email.replace("@gmail.com", ""),
+          Role: "Manager",
+          // Company: data1.company,
+          // deviceID: currentDeviceID, // Store the device ID
+        };
+
+        console.log("User not found in Firestore, saving details...");
+        await setDoc(userRef, userDetails);
+        console.log("User details saved to Firestore!");
+        // Check if the device ID matches the stored device IDgit
+        window.location.href = "mhome.html";
+
+        
+      } else {
+        // / Log successful login in Firestore
+      
+      // Save UID in sessionStorage
+      sessionStorage.setItem('userUID', user.uid);
+      window.location.href = "mhome.html";
+
+       
+      }
+
+      
+
+
+    }
+     else {
       console.error("User is not in the allowedUsers collection.");
       window.location.href = "notuser.html"; // Redirect to a page indicating the user is not allowed
     }

@@ -85,6 +85,7 @@
 
  <div id="set">
     <button id="detect">Detect Location</button>
+    <button id="history">Attendance History</button>
  </div>
  </div>
  <script>
@@ -100,7 +101,19 @@
       const content = document.getElementById('content');
       content.classList.add('fade-out');
       setTimeout(() => {
+        // window.location.href = 'location.html';
         window.location.href = 'location.html';
+
+      }, 1000); // Duration of the fade-out
+    });
+
+    document.getElementById('history').addEventListener('click', () => {
+      const content = document.getElementById('content');
+      content.classList.add('fade-out');
+      setTimeout(() => {
+        // window.location.href = 'location.html';
+        window.location.href = 'attendhis.html';
+
       }, 1000); // Duration of the fade-out
     });
  </script>

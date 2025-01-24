@@ -53,10 +53,16 @@ function drawPolygon(map, polygon) {
 // Function to get current location and check if it's within the polygon
 function getLocationAndCheckRadius() {
   const polygon = [
-    { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
-    { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
-    { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
-    { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
+    // { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
+    // { lat: 17.1976073, lng: 78.5991066 }, // Top-right corner
+    // { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
+    // { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
+
+    { lat: 17.4003413, lng: 78.5899033 }, // Top-left corner
+    { lat: 17.4005275, lng: 78.5899425 }, // Top-right corner
+    { lat: 17.4004386, lng: 78.5902228}, // Bottom-right corner
+    { lat: 17.4002726, lng: 78.5901558 }
+
 
     // { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
     // { lat: 17.2118795, lng: 78.6034384 }, // Top-right corner
@@ -106,9 +112,13 @@ function getLocationAndCheckRadius() {
         const targetLocation={ 
           // lat: 17.1976073,
           //  lng: 78.5991066 
+          
+           lat: 17.4002726, 
+           lng: 78.5901558 
 
-           lat: 17.2117314,
-            lng: 78.6037210, // Bottom-right corner
+
+          //  lat: 17.2117314,
+          //   lng: 78.6037210, // Bottom-right corner
 
           };
 

@@ -1,8 +1,8 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
-import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+
 
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -16,9 +16,21 @@ const firebaseConfig = {
   measurementId: "G-H15DN69132"
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+     const db = getFirestore(app); // Initialize Firestore
+
+function generateDeviceID() {
+  const userAgent = navigator.userAgent; // User's browser/device info
+  const platform = navigator.platform; // OS/platform info
+  const randomSalt = "random_salt_value"; // Add a salt for uniqueness
+  const rawID = `${userAgent}-${platform}-${randomSalt}`;
+  // const rawID=`${userAgent}`;
+  return btoa(rawID); // Encode to create a unique identifier
+}
+
 
 // Manual Sign-In
 const signinButton = document.getElementById('signinButton');
@@ -30,7 +42,7 @@ if (signinButton) {
     const passwordInput = document.getElementById('signinPassword');
     const email = emailInput.value;
     const password = passwordInput.value;
-  
+
     const triggerShake = (input) => {
       input.classList.remove('shake');
       void input.offsetWidth; // Trigger a reflow
@@ -47,38 +59,67 @@ if (signinButton) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password); // Use await here
       const user = userCredential.user;
       console.log(user);
-      // alert("Logged in successfully!");
-  
-      const db = getFirestore(app); // Initialize Firestore
-      const userRef = doc(db, 'users', user.uid);
-      const userDoc = await getDoc(userRef); // Fetch the user document
-  
-      if (!userDoc.exists()) {
-        console.log("User not found in Firestore, saving details...");
-        const userDetails = {
-          name: user.displayName || "Anonymous",
-          email: user.email,
-          photoURL: user.photoURL || "profile.png",
-        };
-  
-        // Save user details to Firestore
-        await setDoc(userRef, userDetails);
-        console.log("User details saved to Firestore!");
-  
-        // Save UID in sessionStorage
-        sessionStorage.setItem('userUID', user.uid);
-  
-        // Redirect to user details page after saving
-        window.location.href = "userDetails.html";
-      } else {
-        console.log("User already exists in Firestore, no need to save again.");
-        if(user.displayName=="Anonymous"){
-          window.location.href="index.html";
-        }
-        else{
-        window.location.href = "home.html"; // Redirect to the home page
-        }
-      }
+
+         // Query the allowedUsers collection for the authenticated user's UID
+         const allowedUsersRef = collection(db, 'allowedUsers');
+         const allowedmanagerRef=collection(db,'allowedManagers');
+     
+         const q = query(allowedUsersRef, where('uid', '==', user.email.replace("@gmail.com", "")));
+         const p = query(allowedmanagerRef, where('uid','==', user.email.replace("@gmail.com","")));
+         const querySnapshot = await getDocs(q);
+         const pmanagers= await getDocs(p);
+     
+         if (!querySnapshot.empty) { // If user UID exists in allowedUsers
+           console.log("User is allowed to log in.");
+     
+           // const data1 = querySnapshot.docs[0].data();
+     
+           const userRef = doc(db, 'users', user.uid);
+     
+           // Check if the user already exists in Firestore
+           const userDoc = await getDoc(userRef);
+     
+           // Generate the current device ID
+           const currentDeviceID = generateDeviceID();
+     
+          //  if (userDoc.exists()) {
+             const userData = userDoc.data();
+     
+             // Check if the device ID matches the stored device IDgit
+             if (userData.deviceID && userData.deviceID !== currentDeviceID) {
+               console.error("You can only log in from the device you initially used.");
+               window.location.href = "notuser.html"; // Redirect to a page showing the device restriction message
+               return;
+             }
+          //  } else {
+     
+     
+     
+           // Save UID in sessionStorage
+           sessionStorage.setItem('userUID', user.uid);
+           window.location.href = userDoc.exists() ? "home.html" : "userDetails.html";
+     
+         }
+         else if(!pmanagers.empty){
+     
+           console.log("Manager is allowed to log in.");
+          
+           
+           // Save UID in sessionStorage
+           sessionStorage.setItem('userUID', user.uid);
+           window.location.href = "mhome.html";
+     
+            
+           
+     
+           
+     
+     
+         }
+          else {
+           console.error("User is not in the allowedUsers collection.");
+           window.location.href = "notuser.html"; // Redirect to a page indicating the user is not allowed
+         }
     } catch (error) {
       console.error("Error during sign-in:", error);
       const errorCode = error.code;

@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, deleteUser } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, collection, getDocs, query, where, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, setDoc, addDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "geo-orbit-ed7a7.firebaseapp.com",
   databaseURL: "https://geo-orbit-ed7a7-default-rtdb.firebaseio.com",
   projectId: "geo-orbit-ed7a7",
-  storageBucket: "geo-orbit-ed7a7.firebasestorage.app",
+  storageBucket: "geo-orbit-ed7a7.appspot.com",
   messagingSenderId: "807202826514",
   appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
   measurementId: "G-H15DN69132"
@@ -40,39 +40,36 @@ async function handleSignIn() {
       const userRef = doc(db, 'users', user.uid);
 
       // Check if the user already exists in Firestore
-      const userDoc = await getDoc(userRef); // Fetch the user document
+      const userDoc = await getDoc(userRef);
 
-      if (!userDoc.exists()) { // If user data does not exist
+      const userDetails = {
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        EmployeeID: user.email.replace("@gmail.com", ""),
+        Role: "Employee",
+        Company: data1.company,
+      };
+
+      if (!userDoc.exists()) {
         console.log("User not found in Firestore, saving details...");
-
-        const userDetails = {
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          EmployeeID: user.email.replace("@gmail.com", ""),
-          Role: "Employee",
-          Company: data1.company,
-        };
-
-        // Save user details to Firestore
         await setDoc(userRef, userDetails);
         console.log("User details saved to Firestore!");
-
-        // Save UID in sessionStorage
-        sessionStorage.setItem('userUID', user.uid); // Save the user ID
-
-        // Redirect to user details page after saving
-        window.location.href = "userDetails.html";
-
-      } else {
-        console.log("User already exists in Firestore, no need to save again.");
-
-        // Save UID in sessionStorage
-        sessionStorage.setItem('userUID', user.uid); // Save the user ID
-
-        // If user already exists, redirect to the user details page
-        window.location.href = "home.html"; // Redirect to the user details page
       }
+
+      // Log successful login in Firestore
+      const loginsRef = collection(db, "logins");
+      await addDoc(loginsRef, {
+        name: user.displayName,
+        email: user.email,
+        timestamp: new Date(), // Store login timestamp
+      });
+
+      console.log("Login event recorded in Firestore.");
+
+      // Save UID in sessionStorage
+      sessionStorage.setItem('userUID', user.uid);
+      window.location.href = userDoc.exists() ? "home.html" : "userDetails.html";
 
     } else {
       console.error("User is not in the allowedUsers collection.");
@@ -81,10 +78,8 @@ async function handleSignIn() {
     }
 
   } catch (error) {
-    console.error("Error during sign-in:", error); // Log detailed error
-    const errorMessage = error.message;
-    // alert(`Sign-in failed: ${errorMessage}`);
-    window.location.href="index.html";
+    console.error("Error during sign-in:", error);
+    window.location.href = "index.html";
   }
 }
 
@@ -92,5 +87,5 @@ async function handleSignIn() {
 window.onload = () => {
   setTimeout(() => {
     handleSignIn();
-  }, 2000); // Delay for 3 seconds (3000 milliseconds)
+  }, 2000); // Delay for 2 seconds
 };

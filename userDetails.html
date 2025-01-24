@@ -52,7 +52,7 @@
 <body>
   <!-- <h1>User Details</h1> -->
   <div id="home1">
-    <div id="dhome" onclick="window.location.href='home.html'">
+    <div id="dhome">
       <img id="hlogo" src="homelogo.png" alt="">
 
     </div>
@@ -60,7 +60,7 @@
       Orbit
   </div>
   </div>
-  <div class="profile">
+  <div class="profile" id="profile" >
     <!-- <p id="profiledetails">Profile</p> -->
     <img id="userPhoto" src=""  width="100%" />
     <p id="userName"></p>   
@@ -78,11 +78,23 @@
     <button id="reset">Update Password</button>
     <button id="logoutButton">Logout</button>
     </div>
+ 
+  <div id="sent" ></div>
+
   </div>
   <style>
     body{
       background-image: url(background_in_space.webp);
     }
   </style>
+  <script>
+    document.getElementById('dhome').addEventListener('click', () => {
+        const content = document.getElementById('profile');
+        content.classList.add('fade-out');
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 500); // Duration of the fade-out
+      });
+   </script>
 </body>
 </html>

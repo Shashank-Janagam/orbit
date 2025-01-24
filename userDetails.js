@@ -71,7 +71,9 @@ resetPasswordButton.addEventListener('click', async (e) => {
 
   try {
     await sendPasswordResetEmail(auth, email);
-    alert("Password reset link sent to your email!");
+    // alert("Password reset link sent to your email!");
+    const textDiv = document.getElementById('sent');
+    textDiv.textContent="Password reset link sent to your email!";
   } catch (error) {
     console.error("Error sending password reset email:", error);
     const errorCode = error.code;

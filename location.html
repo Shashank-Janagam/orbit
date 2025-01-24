@@ -89,7 +89,7 @@
 </head>
 <body>
   <div id="home1">
-    <div id="dhome" onclick="window.location.href='home.html'">
+    <div id="dhome">
       <img id="hlogo" src="homelogo.png" alt="">
     </div>
     <div class="orbit1">
@@ -100,7 +100,7 @@
   </div id="plogo">
   </div>
 
- <div class="b">
+ <div class="b" id="b">
 
   <div class="blocks">
     <div id="aboutloc">
@@ -136,6 +136,15 @@
 
   <script src="gps.js" type="module"></script>
   <!-- <script src="home.js"></script> -->
+  <script>
+    document.getElementById('dhome').addEventListener('click', () => {
+        const content = document.getElementById('b');
+        content.classList.add('fade-out');
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 500); // Duration of the fade-out
+      });
+   </script>
   
 </body>
 </html>

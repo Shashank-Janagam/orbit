@@ -36,12 +36,7 @@
   font-style: normal;
   /* margin-left: 42.7%; */
     }
-    /* #home1{
-              display: flex;
-              justify-content: center;
-              gap:25%;
-              height: 50px;
-          } */
+ 
       #dhome{
   
       background-color: transparent;
@@ -82,14 +77,33 @@
     <div class="orbit1">
         Orbit
     </div>
-    <div id="plogo" onclick="window.location.href='userDetails.html'">
+    <div id="plogo">
     <img id="logo" src=""></img>
     </div>
  </div>
+ <div id="content" class="content">
 
  <div id="set">
-    <button id="detect" onclick="window.location.href='location.html'">Detect Location</button>
+    <button id="detect">Detect Location</button>
  </div>
+ </div>
+ <script>
+  document.getElementById('plogo').addEventListener('click', () => {
+      const content = document.getElementById('content');
+      content.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'userDetails.html';
+      }, 500); // Duration of the fade-out
+    });
+
+    document.getElementById('detect').addEventListener('click', () => {
+      const content = document.getElementById('content');
+      content.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'location.html';
+      }, 1000); // Duration of the fade-out
+    });
+ </script>
 
   <script type="module" src="home.js"></script>
 </body>

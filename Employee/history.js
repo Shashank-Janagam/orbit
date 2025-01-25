@@ -36,7 +36,9 @@ if (!userEmail) {
     const attendanceCollection = collection(db, "/company/Microsoft/Attendance");
 
     // Create query to filter by Email
-    const employeeID = userEmail.replace("@gmail.com", ""); // Example if the email is used for EmployeeID
+    const employeeID = userEmail.replace("@gmail.com", ""); 
+    // Example if the email is used for EmployeeID
+    console.log(employeeID);
     const q = query(attendanceCollection, where("EmployeeID", "==", employeeID));
 
     // Fetch query results
@@ -67,7 +69,7 @@ if (!userEmail) {
         <table class="styled-table">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Attended Date</th>
               <th>Employee ID</th>
               <th>Role</th>
               <th>First Login</th>
@@ -87,7 +89,7 @@ if (!userEmail) {
       console.log("No attendance records found for this EmployeeID.");
       document.getElementById('profile').innerHTML = "<p>No records found</p>";
     }
-  } catch (error) {
+  } catch (error) {``
     console.error("Error fetching user data from Firestore:", error);
     document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
   }

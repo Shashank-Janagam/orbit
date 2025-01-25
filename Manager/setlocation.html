@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit - Home Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Acme&family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&family=Goldman:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <!-- <script type="module" src="userDetails.js"></script> Include the external JS file -->
+  <link rel="icon" type="image/png" href="icon.png">
+  
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmsDc7bwmGQEGaxsxIB2MT9RUUbNtvMmw&callback=initMap" defer></script>
+
+  <!-- External JS -->
+  <script type="module" src="set.js" defer></script>
+
+  <link rel="stylesheet" href="home.css">
+  
+  <style>
+    .orbit1 {
+      font-family: 'Source Sans Pro', sans-serif;
+      text-align: center;
+      font-style: italic;
+      color: white;
+      font-size: 50px;
+      font-family: "Dancing Script", serif;
+      font-optical-sizing: 90px;
+      font-weight: 700;
+    }
+
+    #dhome {
+      background-color: transparent;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      margin-top: 0.5%;
+      margin-left: 1%;
+    }
+
+    #hlogo {
+      width: 100%;
+      border-radius: 50%;
+    }
+
+    #hlogo:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+   
+  </style>
+</head>
+<body>
+  <div id="home1">
+      <div id="dhome" onclick="window.location.href='mhome.html'">
+          <img id="hlogo" src="/Images/homelogo.png" alt="Home Logo">
+      </div>
+      <div class="orbit1">Orbit</div>
+      <div id="plogo"><img id="logo" src=""></div>
+  </div>
+
+  <div id="gmaps">
+    <div id="fell">
+        <p>Pinpoint the four corners of your office by selecting the perfect spots on the map.</p>
+    </div>
+      <div id="maps"></div>  
+         <div id="fel"></div>
+<!-- Make sure this container is visible -->
+  </div>
+</body>
+</html>

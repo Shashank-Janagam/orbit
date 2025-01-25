@@ -26,7 +26,20 @@ const userEmail = sessionStorage.getItem('userEmail');
 
 const search=document.getElementById("search");
 search.addEventListener('click', async () => {
-    const EmployeeID=document.getElementById('empid').value;
+    const EmployeeI=document.getElementById('empid');
+    const EmployeeID=EmployeeI.value;
+    
+    const triggerShake = (input) => {
+            input.classList.remove('shake');
+            void input.offsetWidth; // Trigger a reflow
+            input.classList.add('shake');
+          };
+    if(!EmployeeID){
+        triggerShake(EmployeeI);
+        return ;
+        
+
+    }
 
 if (!userEmail) {
   console.log("No user is authenticated!");
@@ -66,11 +79,11 @@ if (!userEmail) {
 
       // Create table content
       const profileContent = `
-        <h2>Your Attendance History</h2>
+        <h2 id="fel">Employee Attendance Details</h2>
         <table class="styled-table">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Attended Date</th>
               <th>Employee ID</th>
               <th>Role</th>
               <th>First Login</th>
@@ -88,7 +101,8 @@ if (!userEmail) {
       document.getElementById('profile').innerHTML = profileContent;
     } else {
       console.log("No attendance records found for this EmployeeID.");
-      document.getElementById('profile').innerHTML = "<p>No records found</p>";
+      document.getElementById('fel').innerHTML = "<p>Employee Not Found</p>";
+      
     }
   } catch (error) {
     console.error("Error fetching user data from Firestore:", error);
@@ -186,7 +200,9 @@ async function fetchAttendanceData(selectedDate) {
             // Display the selected date's attendance data in a form-like structure
             displayProfileForm(doc);
         } else {
-            document.getElementById('profile').innerHTML = `<p>No attendance record found for ${selectedDate}</p>`;
+            document.getElementById('profile-form').innerHTML=`<p></p>`; 
+           document.getElementById('fel').innerHTML = `<p>Absent On ${selectedDate}</p>`;
+
         }
     } catch (error) {
         console.error("Error fetching user data from Firestore:", error);
@@ -198,8 +214,12 @@ async function fetchAttendanceData(selectedDate) {
 // Function to display selected date's details in a form
 function displayProfileForm(data) {
     const profileContent = `
-        <h2>Attendance Details for Selected Date</h2>
-        <div class="profile-form">
+        <h2 id="fel">Attendance Details for Selected Date</h2>
+        <div class="profile-form" id="profile-form">
+        <div class="profile-item">
+        <label for="logins"     >Name         :            </label>
+        <p id="logins">${data.Name || "N/A"}</p>
+    </div>
     <div class="profile-item">
         <label for="empid1"     >Employee ID    :</label>
         <p id="empid1">${data.EmployeeID || "N/A"}</p>
@@ -224,6 +244,7 @@ function displayProfileForm(data) {
         <label for="logins"     >Logins         :            </label>
         <p id="logins">${data.Logindata || "N/A"}</p>
     </div>
+    
 </div>
 
     `;

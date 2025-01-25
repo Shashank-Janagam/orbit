@@ -42,16 +42,18 @@ function drawPolygon(map, polygon) {
   new google.maps.Polygon({
     paths: path,
     map: map,
-    fillColor:"#18aff1",
-    fillOpacity: 0.5,
-    strokeColor: "#18aff1",
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    title: "Office Area"
+    strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
   });
 }
 
 // Function to get current location and check if it's within the polygon
+const locref=doc(db,"company/Microsoft/Location/PolygonData");
+const loco=await getDoc(locref);
+const data=loco.data();
 function getLocationAndCheckRadius() {
   const polygon = [
     // { lat: 17.1975195, lng: 78.5983140 }, // Top-left corner
@@ -59,10 +61,11 @@ function getLocationAndCheckRadius() {
     // { lat: 17.1969238, lng: 78.5992008 }, // Bottom-right corner
     // { lat: 17.1968527, lng: 78.5983751 }  // Bottom-left corner
 
-    { lat: 17.4003413, lng: 78.5899033 }, // Top-left corner
-    { lat: 17.4005275, lng: 78.5899425 }, // Top-right corner
-    { lat: 17.4004386, lng: 78.5902228}, // Bottom-right corner
-    { lat: 17.4002726, lng: 78.5901558 }
+    { lat: data.lat1, lng: data.lng1 }, // Top-left corner
+    { lat: data.lat2, lng: data.lng2 }, // Top-right corner
+    { lat: data.lat3, lng: data.lng3}, // Bottom-right corner
+    { lat: data.lat4, lng: data.lng4 }
+
 
 
     // { lat: 17.2115389, lng: 78.6033113 }, // Top-left corner
@@ -114,8 +117,10 @@ function getLocationAndCheckRadius() {
           // lat: 17.1976073,
           //  lng: 78.5991066 
           
-           lat: 17.4002726, 
-           lng: 78.5901558 
+          //  lat: 17.4002726, 
+          //  lng: 78.5901558 
+          lat: data.lat4,
+           lng: data.lng4
 
 
           //  lat: 17.2117314,
@@ -167,12 +172,12 @@ async function logAttendance() {
       alert("Please sign in to proceed.");
       window.location.href = "/index.html"; // Redirect to login page
     }else{
-      if (user) {
+      
         // console.log("User is logged in:", user.uid);
 
         // Create an async function inside the callback
         (async () => {
-          const userRef = doc(db, "users", user.uid); // Reference to the user's document
+          const userRef = doc(db, "users", userUID); // Reference to the user's document
 
           try {
             const userDoc = await getDoc(userRef);
@@ -211,6 +216,7 @@ async function logAttendance() {
 
               // console.log(docId);
               const attendanceData = {
+                Name:userData.name,
                 EmployeeID: userData.EmployeeID,
                 Role: userData.Role,
                 Date: date,
@@ -239,9 +245,7 @@ async function logAttendance() {
             console.error("Error fetching user data from Firestore:", error);
           }
         })(); // Immediately invoke the async function
-      } else {
-        console.log("No user is logged in");
-      }
+     
     }
   } catch (error) {
     console.error("Error logging attendance:", error);

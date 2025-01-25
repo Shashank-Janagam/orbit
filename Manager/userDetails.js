@@ -25,6 +25,7 @@ const db = getFirestore(app); // Initialize Firestore
 
 
 const logoutButton = document.getElementById('logoutButton');
+const userUID = sessionStorage.getItem('userUID');
 
 // Add an event listener to the logout button
 logoutButton.addEventListener('click', async () => {
@@ -46,9 +47,12 @@ logoutButton.addEventListener('click', async () => {
 const resetPasswordButton = document.getElementById('reset');
 resetPasswordButton.addEventListener('click', async (e) => {
   e.preventDefault();
-  onAuthStateChanged(auth, async (user) => {
-
-  const userRef = doc(db, "users", user.uid); // Reference to the user's document
+  if (!userUID) {
+    console.log("No user is authenticated!");
+    alert("Please sign in to proceed.");
+    window.location.href = "/index.html"; // Redirect to login page
+  } else {
+  const userRef = doc(db, "managers", userUID); // Reference to the user's document
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 
@@ -86,12 +90,11 @@ resetPasswordButton.addEventListener('click', async (e) => {
     } else {
       alert(`Error: ${error.message}`);
     }
-  }})
+  }}
 });
 
 
 
-const userUID = sessionStorage.getItem('userUID');
 
 if (!userUID) {
   console.log("No user is authenticated!");

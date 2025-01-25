@@ -8,13 +8,56 @@
 }
 
 #empid {
-    width: 24%;
+    width: 22%;
     height: 40px;
     border: 0px;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
     box-sizing: border-box;
+    border-bottom: none;
+    outline: 0;
+    /* font-size: 17px; */
+    float: left;
+    font-family: sans-serif;
+
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: bold;
+    margin-left: 1%;
 }
+#rocket{
+    
+ 
+        max-width: 80%;
+        max-height: 80%;
+        /* padding-left: 20px; */
+        padding-top: 2px;
+        
+}
+#rocket:hover{
+    transform: scale(1.1) ;/* Rotate on hover */
+transition: transform 0.6s ease;
+}
+#empid:focus {
+    border-bottom: none;
+  }
+
+  #fel{
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: "Goldman", serif;
+
+  }
+
+  @keyframes shake {
+    
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
 
 #search {
     width: 5%;
@@ -31,7 +74,7 @@
 .profile-form {
     display: flex;
     flex-direction: column; /* Stack the profile items vertically */
-    gap: 20px;
+    gap: 10px;
     width: 100%;
     height: 85%;
     padding: 20px;
@@ -42,13 +85,14 @@
     display: flex; /* Align label and p on the same row */
     align-items: center; /* Vertically center the label and paragraph */
     justify-content: flex-start; /* Ensure they align horizontally */
-    gap: 20px; /* Space between label and paragraph */
+    gap: 30px; /* Space between label and paragraph */
     flex-wrap: wrap; /* Ensure that items don't break when the container is too small */
 }
 
 .profile-form label {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 1000;
+    font-family: "Goldman", serif;
     color: #333;
 }
 
@@ -61,10 +105,11 @@
 
 /* Hover effect on the paragraph */
 .profile-item p:hover {
-    background-color: #e7f5ff;
-    border-color: #67aaf1;
-    transform: translateY(-2px);
+    background-color: #eceff1;
+    /* border-color: #67aaf1; */
+    /* transform: translateY(-2px); */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 7px;
 }
 
 /* Add hover effect on the entire form */

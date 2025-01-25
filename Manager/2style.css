@@ -28,41 +28,62 @@ margin-left: 42%;
     }
    
 }
+/* Color variables */
+:root {
+  --clr-primary: #d0def2;
+  --clr-primary-light: #f3f8fe;
+  --clr-primary-dark: #a7bad3;
+  --clr-gray100: #f9fbff;
+  --clr-gray150: #f4f6fb;
+  --clr-gray200: #eef1f6;
+  --clr-gray300: #e1e5ee;
+  --clr-gray400: #767b91;
+  --clr-gray500: #4f546c;
+  --clr-gray600: #2a324b;
+  --clr-gray700: #161d34;
 
-.styled-table {
+  /* Border radius */
+  --radius: 0.2rem;
+}
+
+
+
+table.styled-table {
+  width: 98%;
   border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.styled-table thead tr {
-  background-color: #009879;
-  color: #ffffff;
+  /* box-shadow: 10px 10px 20px var(--clr-primary-dark); */
+  background-color: white;
   text-align: left;
-}
-styled-table th,
-.styled-table td {
-    padding: 12px 15px;
-}
-
-.styled-table tbody tr {
-  border-bottom: 1px solid #dddddd;
+  overflow: hidden;
+  border-radius: var(--radius);
+  margin-left: 1%;
 }
 
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
-}
-
-.styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid #009879;
-}
-
-.styled-table tbody tr.active-row {
+table.styled-table th {
+  background-color: var(--clr-primary);
+  color: var(--clr-gray700);
+  font-size: 0.8rem;
   font-weight: bold;
-  color: #009879;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  letter-spacing: 0.05rem;
+}
+
+table.styled-table td {
+  font: 1rem;
+  font-weight: bold;
+  padding: 0.75rem 1rem;
+  color: var(--clr-gray600);
+}
+
+table.styled-table tr:nth-child(even) {
+  background-color: var(--clr-primary-light);
+}
+
+table.styled-table tr:hover {
+  background-color: var(--clr-primary-dark);
+  color: white;
+  transition: background-color 0.3s ease-in-out;
 }
 
 
@@ -85,6 +106,10 @@ styled-table th,
     margin-top:3.5%;
     /* margin: */
     border-radius: 8px;
+    /* align-content: center; */
+    /* justify-content: center; */
+    /* align-items: center; */
+
     height: auto;
     transition: opacity 0.5s ease; /* Smooth fade effect */
 

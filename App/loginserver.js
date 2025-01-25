@@ -101,7 +101,8 @@ if (signinButton) {
           //  } else {
      
      
-     
+          sessionStorage.setItem('userEmail', user.email);
+
            // Save UID in sessionStorage
            sessionStorage.setItem('userUID', user.uid);
            window.location.href = userDoc.exists() ? "/Employee/home.html" : "/Employee/userDetails.html";

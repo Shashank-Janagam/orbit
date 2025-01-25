@@ -1,0 +1,73 @@
+.e1 {
+    display: flex; /* Enable flexbox */
+    flex-direction: row; /* Arrange items side by side */
+    /* align-items: center; Vertically align the items */
+    /* justify-content:center; */
+    margin-top: 20px;
+    /* height: 100vh; Full viewport height to center vertically */
+}
+
+#empid {
+    width: 24%;
+    height: 40px;
+    border: 0px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    box-sizing: border-box;
+}
+
+#search {
+    width: 5%;
+    height: 40px;
+    border: 0px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    box-sizing: border-box;
+    background-color: aliceblue;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.profile-form {
+    display: flex;
+    flex-direction: column; /* Stack the profile items vertically */
+    gap: 20px;
+    width: 100%;
+    height: 85%;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-item {
+    display: flex; /* Align label and p on the same row */
+    align-items: center; /* Vertically center the label and paragraph */
+    justify-content: flex-start; /* Ensure they align horizontally */
+    gap: 20px; /* Space between label and paragraph */
+    flex-wrap: wrap; /* Ensure that items don't break when the container is too small */
+}
+
+.profile-form label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-item p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Hover effect on the paragraph */
+.profile-item p:hover {
+    background-color: #e7f5ff;
+    border-color: #67aaf1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add hover effect on the entire form */
+.profile-form:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}

@@ -133,7 +133,7 @@ font-style: italic;
 
 #home {
 /* align-content: center; */
-background-image: url("/Images/background_in_space.webp");
+background-image: url("background_in_space.webp");
 background-repeat: no-repeat; /* Uncommented for better control */
 background-size: cover; /* Improved image scaling */
 background-position: center center; /* Center the image */

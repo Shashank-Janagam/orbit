@@ -1,0 +1,298 @@
+
+body, html {
+    background-image: url(background_in_space.webp);
+    padding: 0;
+    margin: 0;
+    font-family: 'Source Sans Pro', sans-serif;
+    /* overflow: hidden; */
+    }
+     /* For modern browsers */
+     body::-webkit-scrollbar {
+      width: 0px; /* Make the scrollbar narrower */
+    }
+    #map {
+        width: 100%;
+        /* padding-top: 10%; */
+        /* margin-top:1%; */
+        height: 100%;
+        border-radius: 8px; /* Match the style of the blocks */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+
+    }
+    #map2{
+        width: 100%;
+        /* padding-top: 10%; */
+        /* margin-top:1%; */
+        height: 96%;
+        border-radius: 8px; /* Match the style of the blocks */
+        /* border-radius: 8px; */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+
+    }
+    #home1{
+        display: flex;
+        justify-content: center;
+        gap:42%;
+        height: 50px;
+    }
+    .b{
+        display: flex;
+        /* transition: opacity 0.5s ease; Smooth fade-in effect */
+
+    }
+
+
+
+    .content,.b {
+      /* text-align: center; */
+      transition: opacity 0.5s ease; /* Smooth fade effect */
+    }
+    
+    /* Fade-out effect */
+    .content.fade-out,.b.fade-out {
+      opacity: 0;
+    }
+    
+    /* Fade-in effect */
+    .content.fade-in{
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    .b.fade-in{
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  
+
+
+    @media (max-width: 768px) {
+        #home1 {
+            gap: 25%;
+        }
+        .b {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+        
+          .blocks, .block2 {
+            width: 100%; 
+
+          }
+        
+          #map, #map2 {
+            height: 90%; /* Reduce map height on mobile */
+            width: 100%;
+          }
+    }
+    #detect:focus,#history:focus{
+        outline: none; /* Remove outline */
+        border: 2px solid #04AA6D; /* Highlight border */
+        transform: scale(1.05); /* Slight zoom effect */
+        }
+
+
+        #home{
+            display: flex;
+            /* justify-content: center; */
+        }
+    #detect:hover,#history:hover{
+            transform: scale(1.01); /* Slight zoom effect */
+            background-color: #3bc190; /* Darker green */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+            }
+
+            #set{
+              display: flex;
+              flex-direction: column; /* Stack buttons vertically */
+              align-items: center; /* Center horizontally */
+              justify-content: center; /* Center vertically */
+              height: 100vh; /* Full viewport height */
+              gap: 20px;
+
+            }
+            #logo{
+                width: 100%;
+                border-radius: 50%;
+            }
+#plogo{
+    background-color: transparent;
+    border-radius: 50%;
+    /* margin-left: 39vmax; */
+    height: 40px;
+    width: 40px;
+    margin-top:1%;
+
+}
+
+#logo:hover{
+    transform: scale(1.1); /* Slight zoom effect */
+            /* background-color: #04AA6D; Darker green */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    
+
+}
+    #detect,#history{
+        /* margin-left: 41%; */
+        /* margin-top :50%; */
+        background-color: #04AA6D;
+        border-radius: 15px;
+        /* width: 17%; */
+        
+        color: white;
+        
+        
+        border:none;
+        
+        /* left: 50%; */
+        
+        font-weight: 700;
+        /* margin-top: 30px !important; */
+        font-size: 20px;
+        text-align: center;
+        width: 18vmax;
+        /* max-width:17%; */
+        height: 47.5px;
+        /* padding-left: 90px; 
+        padding-right: 90px; */
+        
+        font-style: italic;
+      
+        
+        
+        
+        }
+
+    #aboutloc{
+        /* position: inherit; */
+        /* margin: 0px; */
+        /* font-size: 1rem; */
+        font-weight: bold;
+        color:white;
+        text-align: center;
+        font-size:20px;
+        background-color: transparent;
+    }
+    .res{
+         /* position: inherit; */
+        /* margin: 0px; */
+        /* font-size: 1rem; */
+        font-weight: bold;
+        color:#333;
+        text-align: center;
+        font-size:20px;
+        background-color: transparent;
+        margin-left:25%;
+
+
+    }
+   
+
+    @media (min-width: 79px) {
+        
+    }
+.blocks {
+    /* padding-top: 10%; */
+    /* width: 60%; */
+    width:90%;
+    /* margin: auto; */
+    /* text-align: center; */
+    font-family: arial;
+    background-color:transparent;
+    /* padding: 20px; */
+    margin-left:2%;
+    /* padding-top: 10%; */
+    margin-top: 5%;
+    border-radius: 8px;
+    height: 600px;
+    /* width: 300px; */
+    display: block;
+  }
+
+
+  .block2 {
+    /* padding-top: 10%; */
+    width:90%;
+    /* margin: auto; */
+    /* text-align: center; */
+    font-family: arial;
+    background-color: transparent;
+    /* padding: 20px; */
+    margin-left:2%;
+    /* padding-top: 10%; */
+    margin-top: 5%;
+    border-radius: 8px;
+    height: 600px;
+    /* width: 300px; */
+    /* margin-top: 9%; */
+    
+  }
+  .d1{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    /* display: block; */
+    /* align-items: center; */
+    /* justify-content: center;  
+     */
+    align-items: center;
+
+  }
+
+  .orbit1{
+    font-family: 'Source Sans Pro', sans-serif; /* Apply font to the entire page */
+/* font-size: 12vmax; */
+/* font-weight: 700; */
+text-align: center;
+font-style: italic;
+color: white;
+
+
+        font-size:50px;
+        /* position:fixed; */
+        /* justify-content: center; */
+        /* padding-left: 45%; */
+
+font-family: "Dancing Script", serif;
+font-optical-sizing: 90px;
+font-weight:700;
+/* margin-top: 10px; */
+font-style: normal;
+margin-left:0;
+  }
+ 
+
+  .b{
+    display: flex;
+    gap: 10px;
+    
+
+  }
+
+  .loc {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+
+  }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit - Profile</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <!-- <script type="module" src="userDetails.js"></script> Include the external JS file -->
+  <link rel="stylesheet" href="2style.css"> <!-- Link to the updated external CSS file -->
+  <link rel="icon" type="image/png" href="/Images/icon.png">
+
+  <style>
+    
+  
+  #home1{
+            display: flex;
+            /* justify-content: center; */
+            height: 50px;
+        }
+    #dhome{
+
+    background-color: transparent;
+    border-radius: 50%;
+    /* margin-left: 43%; */
+    height: 40px;
+    width: 40px;
+    margin-top:.5%;
+    margin-left: 2.32%;
+
+
+    }
+    #hlogo{
+      /* margin-left: 20%; */
+      width: 100%;
+      border-radius: 50%;
+    }
+    #hlogo:hover{
+      cursor: pointer;
+    transform: scale(1.1); /* Slight zoom effect */
+            /* background-color: #04AA6D; Darker green */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    
+
+}
+ 
+  </style>
+</head>
+<body>
+  <!-- <h1>User Details</h1> -->
+  <div id="home1">
+    <div id="dhome">
+      <img id="hlogo" src="/Images/homelogo.png" alt="">
+
+    </div>
+    <div class="orbit1">
+      Orbit
+  </div>
+  </div>
+  <div class="profile" id="profile" >
+    </div>
+ 
+  <style>
+    body{
+      background-image: url(/Images/background_in_space.webp);
+    }
+  </style>
+
+  <script type="module" src="history.js"></script>
+  <script>
+    document.getElementById('dhome').addEventListener('click', () => {
+        const content = document.getElementById('profile');
+        content.classList.add('fade-out');
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 500); // Duration of the fade-out
+      });
+   </script>
+   <script type="module" src="global.js"></script>
+
+</body>
+</html>

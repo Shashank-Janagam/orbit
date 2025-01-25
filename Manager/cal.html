@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="cal.css">
+    <style>
+        .calendar {
+            display: none; /* Initially hide the entire calendar */
+        }
+        .calendar.show {
+            display: block; /* Show the calendar when the "show" class is added */
+        }
+        .calendar__date--today {
+            background-color: yellow; /* Highlight today's date */
+        }
+    </style>
+</head>
+<body>
+    <div id="display">
+    <button id="show-calendar-btn">Show Calendar</button>
+
+    <div class="calendar" id="calendar">
+        <div class="calendar__opts">
+            <select name="calendar__month" id="calendar__month">
+                <option value="0">Jan</option>
+                <option value="1">Feb</option>
+                <option value="2">Mar</option>
+                <option value="3">Apr</option>
+                <option value="4" selected>May</option>
+                <option value="5">Jun</option>
+                <option value="6">Jul</option>
+                <option value="7">Aug</option>
+                <option value="8">Sep</option>
+                <option value="9">Oct</option>
+                <option value="10">Nov</option>
+                <option value="11">Dec</option>
+            </select>
+
+            <select name="calendar__year" id="calendar__year">
+                <option>2020</option>
+                <option>2021</option>
+                <option>2022</option>
+                <option selected>2025</option>
+                <option>2024</option>
+            </select>
+        </div>
+
+        <div class="calendar__body" id="calendar-body">
+            <div class="calendar__days">
+                <div>M</div>
+                <div>T</div>
+                <div>W</div>
+                <div>T</div>
+                <div>F</div>
+                <div>S</div>
+                <div>S</div>
+            </div>
+
+            <div class="calendar__dates" id="calendar-dates">
+                <!-- Dates will be inserted dynamically here -->
+            </div>
+        </div>
+
+        <div class="calendar__buttons">
+            <button class="calendar__button calendar__button--grey">Back</button>
+            <button class="calendar__button calendar__button--primary">Apply</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // Function to generate the calendar dates for the selected month and year
+        function generateCalendar() {
+            const month = document.getElementById("calendar__month").value;
+            const year = document.getElementById("calendar__year").value;
+            const date = new Date(year, month); // Start from the 1st day of the selected month
+            const firstDay = date.getDay(); // Day of the week for the 1st of the month
+            const lastDate = new Date(year, parseInt(month) + 1, 0).getDate(); // Last day of the month
+
+            const calendarDates = document.getElementById("calendar-dates");
+            calendarDates.innerHTML = ""; // Clear the existing dates
+
+            // Get today's date
+            const today = new Date();
+            const todayDate = today.getDate();
+            const todayMonth = today.getMonth();
+            const todayYear = today.getFullYear();
+
+            // Add empty cells for the first week days
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement("div");
+                calendarDates.appendChild(emptyCell);
+            }
+
+            // Add the actual dates of the month
+            for (let day = 1; day <= lastDate; day++) {
+                const dateCell = document.createElement("div");
+                dateCell.classList.add("calendar__date");
+
+                // Check if the current date is today's date and highlight it
+                if (day === todayDate && month == todayMonth && year == todayYear) {
+                    dateCell.classList.add("calendar__date--today");
+                }
+
+                dateCell.innerHTML = `<span>${day}</span>`;
+                dateCell.addEventListener("click", function() {
+                    selectDate(dateCell);
+                });
+                calendarDates.appendChild(dateCell);
+            }
+        }
+
+        // Function to handle date selection
+        function selectDate(dateCell) {
+            // Remove the selected class from any other date
+            const selectedDate = document.querySelector(".calendar__date--selected");
+            if (selectedDate) {
+                selectedDate.classList.remove("calendar__date--selected");
+            }
+
+            // Mark the clicked date as selected
+            dateCell.classList.add("calendar__date--selected");
+        }
+
+        // Function to get the selected date and display it
+        function getSelectedDate() {
+            const selectedDate = document.querySelector(".calendar__date--selected span");
+            const selectedMonth = document.getElementById("calendar__month").value;
+            const selectedYear = document.getElementById("calendar__year").value;
+
+            if (selectedDate) {
+                const fullDate = `${selectedDate.innerText} ${parseInt(selectedMonth) + 1} ${selectedYear}`;
+                console.log("Selected Date:", fullDate);
+            } else {
+                console.log("No date selected.");
+            }
+        }
+
+        // Function to show the calendar
+        function showCalendar() {
+            const calendar = document.getElementById("calendar");
+            calendar.classList.add("show");
+
+            // Set the month and year dropdown to today's values
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            // Set the selected options to today's month and year
+            document.getElementById("calendar__month").value = currentMonth;
+            document.getElementById("calendar__year").value = currentYear;
+
+            // Generate the calendar for today's month and year
+            generateCalendar();
+        }
+
+        // Initial generation of the calendar on page load
+        window.onload = generateCalendar;
+
+        // Update calendar when month or year is changed
+        document.getElementById("calendar__month").addEventListener("change", generateCalendar);
+        document.getElementById("calendar__year").addEventListener("change", generateCalendar);
+
+        // Attach the function to the Apply button
+        document.querySelector(".calendar__button--primary").addEventListener("click", getSelectedDate);
+
+        // Show the calendar when the "Show Calendar" button is clicked
+        document.getElementById("show-calendar-btn").addEventListener("click", showCalendar);
+    </script>
+</body>
+</html>

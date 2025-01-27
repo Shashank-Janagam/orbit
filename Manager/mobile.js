@@ -1,72 +1,65 @@
+// Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
+// Replace with your actual Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
   authDomain: "geo-orbit-ed7a7.firebaseapp.com",
+  databaseURL: "https://geo-orbit-ed7a7-default-rtdb.firebaseio.com",
   projectId: "geo-orbit-ed7a7",
+  storageBucket: "geo-orbit-ed7a7.firebasestorage.app",
+  messagingSenderId: "807202826514",
+  appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
+  measurementId: "G-H15DN69132"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const db = getFirestore(app); // Initialize Firestore
 
-// Store the user object once authenticated
-let currentUser = null;
+const userUID = sessionStorage.getItem('userUID');
+const company = sessionStorage.getItem('company');
 
-// Listen to authentication state changes and store the user
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    currentUser = user;
-    console.log("Auth state changed. Current user:", user);
-  } else {
-    console.log("No user signed in.");
-    currentUser = null;
-  }
-});
+// Check if user data exists in sessionStorage
+if (userUID && company) {
+  console.log("Session userUID:", userUID);
+  console.log("Session company:", company);
 
-// Update button event listener
-const update = document.getElementById('updatebutton');
-update.addEventListener('click', async () => {
-  const mobileInput = document.getElementById('mobilenumber').value;
+  // Add event listener for the update button
+  const update = document.getElementById('updatebutton');
+  update.addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
 
-  if (!mobileInput) {
-    alert("Please enter a valid mobile number.");
-    return;
-  }
+    const mobileInput = document.getElementById('mobilenumber').value;
 
-  if (!currentUser) {
-    alert("Please sign in to update your mobile number.");
-    // window.location.href = "userDetails.html"; 
+    if (!mobileInput) {
+      alert("Please enter a valid mobile number.");
+      return;
+    }
 
-    return;
-  }
+    console.log("Updating mobile number for:", userUID);
 
-  console.log("User is authenticated. Proceeding to update mobile number.");
+    try {
+      // Reference the Firestore document
+      const userRef = doc(db, `company/${company}/managers`, userUID);
+      console.log("Firestore document reference:", userRef);
 
-  try {
-    const userRef = doc(db, 'users', currentUser.uid); // Get reference to user document
-    console.log("Firestore document reference:", userRef);
+      // Update the mobile number field in Firestore
+      await setDoc(userRef, { mobileNumber: mobileInput }, { merge: true });
 
-    // Attempt to update the mobile number field in Firestore
-    const result = await setDoc(userRef, { mobileNumber: mobileInput }, { merge: true });
+      alert("Mobile number updated successfully!");
+      console.log("Mobile number updated successfully!");
 
-    // Check if the update was successful
-    console.log("Update result:", result);  // Check if result is undefined or successful
-
-    alert("Mobile number updated successfully!");
-    console.log("Mobile number updated successfully!");
-
-
-    // Optionally, you can redirect after updating
-    window.location.href = "userDetails.html"; 
-
-  } catch (error) {
-    console.error("Error updating mobile number:", error);
-    alert("Failed to update mobile number. Please try again.");
-    // window.location.href = "userDetails.html"; 
-
-
-  }
-});
+      // Redirect after updating
+      window.location.href = "userDetails.html";
+    } catch (error) {
+      console.error("Error updating mobile number:", error);
+      alert("Failed to update mobile number. Please try again.");
+    }
+  });
+} else {
+  console.error("Session storage data is missing.");
+  alert("Session expired. Please log in again.");
+  // window.location.href = "login.html"; // Uncomment to redirect to login page
+}

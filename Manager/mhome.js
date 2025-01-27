@@ -31,11 +31,14 @@ if (!userUID) {
   window.location.href = "/index.html"; // Redirect to login page
 } else {
   console.log("User is authenticated with UID:", userUID);
-  // Fetch user data from Firestore using userUID
-  const userRef = doc(db, "managers", userUID);
+
+ const company=sessionStorage.getItem('company');
+ console.log(company);
+     const userRef = doc(db, `/company/${company}/managers`,userUID);
+    const userDoc = await getDoc(userRef);
 
   try {
-    const userDoc = await getDoc(userRef);
+    
     
     if (userDoc.exists()) {
       // User data exists, retrieve and display it

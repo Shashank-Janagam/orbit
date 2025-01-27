@@ -312,12 +312,27 @@ margin-left:0;
 
   }
 
+  @media(max-width: 768px) {
+    #maps{
+      background-color: white;
+      width: 80%;
+      height: 500px;
+      border-radius: 15px;
+      margin-top: 5%;
+      margin-left: 10%;
+      
+  
+    }
+    
+  }
+
   #fel{
     font-size: 1.2rem;
     font-weight: bold;
     color:#fff4a3;
     margin-left: 39%;
     margin-top: 5%;
+    margin-right: 39%;
     font-family: "Goldman", serif;
   }
   #fell{
@@ -325,6 +340,7 @@ margin-left:0;
     font-weight: bold;
     color:#fff4a3;
     margin-left: 20%;
+    margin-right: 20%;
     margin-top: 5%;
     font-family: "Goldman", serif;
   }

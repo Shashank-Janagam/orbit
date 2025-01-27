@@ -46,12 +46,18 @@ async function handleSignIn() {
     const querySnapshot = await getDocs(q);
     const pmanagers= await getDocs(p);
 
+
     if (!querySnapshot.empty) { // If user UID exists in allowedUsers
       console.log("User is allowed to log in.");
 
-      // const data1 = querySnapshot.docs[0].data();
+      const cmpref=doc(db,'allowedUsers',user.email.replace("@gmail.com",""));
+      const cmpDoc=await getDoc(cmpref);
+      const cmpdata=cmpDoc.data();
+      const companyName=cmpdata.company;
 
-      const userRef = doc(db, 'users', user.uid);
+     sessionStorage.setItem('company',companyName);
+
+      const userRef = doc(db, `company/${companyName}/users`, user.uid);
 
       // Check if the user already exists in Firestore
       const userDoc = await getDoc(userRef);
@@ -88,7 +94,7 @@ async function handleSignIn() {
           photoURL: user.photoURL,
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Employee",
-          // Company: data1.company,
+          Company: companyName,
           deviceID: currentDeviceID, // Store the device ID
         };
 
@@ -118,9 +124,11 @@ async function handleSignIn() {
 
       console.log("Manager is allowed to log in.");
 
-      // const data1 = querySnapshot.docs[0].data();
-
-      const userRef = doc(db, 'managers', user.uid);
+      const cmpref=doc(db,'allowedManagers',user.email.replace("@gmail.com",""));
+                const cmpDoc=await getDoc(cmpref);
+                const cmpdata=cmpDoc.data();
+                const companyName=cmpdata.company;
+                 const userRef = doc(db, `company/${companyName}/managers`, user.uid);
 
       // Check if the user already exists in Firestore
       const userDoc = await getDoc(userRef);
@@ -137,6 +145,9 @@ async function handleSignIn() {
           photoURL: user.photoURL,
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Manager",
+          Dob:"",
+          mobileNumber:"",
+          Company:companyName,
           // Company: data1.company,
           // deviceID: currentDeviceID, // Store the device ID
         };
@@ -156,6 +167,7 @@ async function handleSignIn() {
       
       // Save UID in sessionStorage
       sessionStorage.setItem('userEmail', user.email);
+      sessionStorage.setItem('company',companyName);
 
       sessionStorage.setItem('userUID', user.uid);
       window.location.href = "/Manager/mhome.html";

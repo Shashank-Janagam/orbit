@@ -52,7 +52,8 @@ resetPasswordButton.addEventListener('click', async (e) => {
     alert("Please sign in to proceed.");
     window.location.href = "/index.html"; // Redirect to login page
   } else {
-  const userRef = doc(db, "managers", userUID); // Reference to the user's document
+  const company=sessionStorage.getItem('company');
+  const userRef = collection(db, `/company/${company}/managers`); // Reference to the user's document
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 
@@ -102,8 +103,9 @@ if (!userUID) {
   window.location.href = "/index.html"; // Redirect to login page
 } else {
   console.log("User is authenticated with UID:", userUID);
-  // Fetch user data from Firestore using userUID
-  const userRef = doc(db, "managers", userUID);
+  const company=sessionStorage.getItem('company');
+  console.log(company);
+  const userRef = doc(db, `company/${company}/managers`,userUID);
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 

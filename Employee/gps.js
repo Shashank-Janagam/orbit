@@ -165,7 +165,8 @@ function getLocationAndCheckRadius() {
 
 async function logAttendance() {
   try {
-    const collectionName = "company/Microsoft/Attendance"; // Firestore collection for attendance
+    const company=sessionStorage.getItem('company');
+    const collectionName = `company/${company}/Attendance`; // Firestore collection for attendance
 
     if (!userUID) {
       console.log("No user is authenticated!");
@@ -174,10 +175,10 @@ async function logAttendance() {
     }else{
       
         // console.log("User is logged in:", user.uid);
-
+        
         // Create an async function inside the callback
         (async () => {
-          const userRef = doc(db, "users", userUID); // Reference to the user's document
+          const userRef = doc(db, `/company/${company}/users`, userUID); // Reference to the user's document
 
           try {
             const userDoc = await getDoc(userRef);

@@ -48,7 +48,11 @@ resetPasswordButton.addEventListener('click', async (e) => {
   e.preventDefault();
   onAuthStateChanged(auth, async (user) => {
 
-  const userRef = doc(db, "users", user.uid); // Reference to the user's document
+    const company=sessionStorage.getItem('company');
+const userUID = sessionStorage.getItem('userUID');
+
+    const userRef = doc(db, `company/${company}/users`, userUID);
+
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 
@@ -90,9 +94,9 @@ resetPasswordButton.addEventListener('click', async (e) => {
 });
 
 
+const company=sessionStorage.getItem('company');
 
-const userUID = sessionStorage.getItem('userUID');
-
+const userUID=sessionStorage.getItem('userUID');
 if (!userUID) {
   console.log("No user is authenticated!");
   alert("Please sign in to proceed.");
@@ -100,7 +104,7 @@ if (!userUID) {
 } else {
   console.log("User is authenticated with UID:", userUID);
   // Fetch user data from Firestore using userUID
-  const userRef = doc(db, "users", userUID);
+  const userRef = doc(db, `company/${company}/users`, userUID);
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 

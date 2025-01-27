@@ -72,10 +72,13 @@ if (signinButton) {
          if (!querySnapshot.empty) { // If user UID exists in allowedUsers
            console.log("User is allowed to log in.");
      
-           // const data1 = querySnapshot.docs[0].data();
-     
-           const userRef = doc(db, 'users', user.uid);
-     
+           const cmpref=doc(db,'allowedUsers',user.email.replace("@gmail.com",""));
+          const cmpDoc=await getDoc(cmpref);
+          const cmpdata=cmpDoc.data();
+          const companyName=cmpdata.company;
+           const userRef = doc(db, `company/${companyName}/users`, user.uid);
+           sessionStorage.setItem('company',companyName);
+
            // Check if the user already exists in Firestore
            const userDoc = await getDoc(userRef);
      
@@ -111,8 +114,13 @@ if (signinButton) {
          else if(!pmanagers.empty){
      
            console.log("Manager is allowed to log in.");
-          
            
+          
+           const cmpref=doc(db,'allowedManagers',user.email.replace("@gmail.com",""));
+          const cmpDoc=await getDoc(cmpref);
+          const cmpdata=cmpDoc.data();
+          const companyName=cmpdata.company;
+           sessionStorage.setItem('company',companyName);
           
            
            // Save UID in sessionStorage

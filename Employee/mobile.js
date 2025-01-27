@@ -16,15 +16,17 @@ const db = getFirestore(app);
 let currentUser = null;
 
 // Listen to authentication state changes and store the user
-onAuthStateChanged(auth, (user) => {
-  if (user) {
+// onAuthStateChanged(auth, (user) => {
+  const userUID=sessionStorage.getItem('userUID');
+  if (userUID) {
     currentUser = user;
     console.log("Auth state changed. Current user:", user);
   } else {
     console.log("No user signed in.");
     currentUser = null;
   }
-});
+
+// });
 
 // Update button event listener
 const update = document.getElementById('updatebutton');
@@ -46,7 +48,8 @@ update.addEventListener('click', async () => {
   console.log("User is authenticated. Proceeding to update mobile number.");
 
   try {
-    const userRef = doc(db, 'users', currentUser.uid); // Get reference to user document
+    const company =sessionStorage.getItem('company');
+    const userRef = doc(db, `company/${company}/users`, userUID); // Get reference to user document
     console.log("Firestore document reference:", userRef);
 
     // Attempt to update the mobile number field in Firestore

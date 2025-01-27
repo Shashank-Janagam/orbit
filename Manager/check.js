@@ -50,7 +50,8 @@ if (!userEmail) {
 
   try {
     // Reference the attendance collection in Firestore
-    const attendanceCollection = collection(db, "/company/Microsoft/Attendance");
+    const company=sessionStorage.getItem('company');
+    const attendanceCollection = collection(db, `/company/${company}/Attendance`);
 
     // Create query to filter by Email
     const q = query(attendanceCollection, where("EmployeeID", "==", EmployeeID));
@@ -190,8 +191,8 @@ async function fetchAttendanceData(selectedDate) {
     }
 
     try {
-        // Firestore query to get attendance data for the selected date and employee ID
-        const attendanceCollection = collection(db, "/company/Microsoft/Attendance");
+      const company=sessionStorage.getItem('company');
+      const attendanceCollection = collection(db, `/company/${company}/Attendance`);
         const q = query(attendanceCollection, where("EmployeeID", "==", employeeID), where("Date", "==", selectedDate));
         const querySnapshot = await getDocs(q);
 
@@ -255,7 +256,7 @@ function displayProfileForm(data) {
 
 
 // Function to show the calendar
-function showCalendar() {
+// function showCalendar() {
     const calendar = document.getElementById("calendar");
     calendar.classList.add("show");
 
@@ -270,10 +271,10 @@ function showCalendar() {
 
     // Generate the calendar for today's month and year
     generateCalendar();
-}
+// }
 
 // Event listeners for the "Show Calendar" button
-document.getElementById("show-calendar-btn").addEventListener("click", showCalendar);
+// document.getElementById("show-calendar-btn").addEventListener("click", showCalendar);
 
 // Initial calendar generation on page load
 window.onload = generateCalendar;

@@ -20,6 +20,34 @@ font-style: normal;
 margin-left: 42%;
   }
   @media (max-width: 768px) {
+    .profile{
+       /* padding-top: 10%; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    /* max-width:70%; */
+
+    width:100%;
+    overflow: scroll;
+    /* margin: auto; */
+    /* margin-left: 30px; */
+    margin-top: 0px;
+    text-align: center;
+    font-family: arial;
+    background-color: #fff;
+    /* padding: 20px; */
+    padding-top: 0px;
+    /* padding-top: 10%; */
+    margin-top:3.5%;
+    /* margin: */
+    border-radius: 8px;
+    /* align-content: center; */
+    /* justify-content: center; */
+    /* align-items: center; */
+
+    height: auto;
+    transition: opacity 0.5s ease; /* Smooth fade effect */
+
+    }
+
     
     .orbit1{
       
@@ -92,6 +120,8 @@ table.styled-table tr:hover {
     /* padding-top: 10%; */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     /* max-width:70%; */
+    overflow: scroll;
+    scrollbar-width:none;
 
     width: 60%;
     /* margin: auto; */

@@ -24,6 +24,7 @@ const db = getFirestore(app); // Initialize Firestore
 
 // File where the user details are displayed (e.g., userDetails.js)
 const userUID = sessionStorage.getItem('userUID');
+const company=sessionStorage.getItem('company');
 
 if (!userUID) {
   console.log("No user is authenticated!");
@@ -32,7 +33,7 @@ if (!userUID) {
 } else {
   console.log("User is authenticated with UID:", userUID);
   // Fetch user data from Firestore using userUID
-  const userRef = doc(db, "users", userUID);
+  const userRef = doc(db, `company/${company}/users`, userUID);
 
   try {
     const userDoc = await getDoc(userRef);

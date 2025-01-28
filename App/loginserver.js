@@ -2,6 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth,signOut, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
 
 // Replace with your actual Firebase configuration
@@ -59,7 +60,6 @@ if (signinButton) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password); // Use await here
       const user = userCredential.user;
       console.log(user);
-
          // Query the allowedUsers collection for the authenticated user's UID
          const allowedUsersRef = collection(db, 'allowedUsers');
          const allowedmanagerRef=collection(db,'allowedManagers');
@@ -99,7 +99,7 @@ if (signinButton) {
                                      console.error("Error logging out the user:", error);
                                    });
                window.location.href = "/invalidDevice.html"; // Redirect to a page showing the device restriction message
-               return;
+              //  return;
              }
           //  } else {
      

@@ -86,6 +86,7 @@
  <div id="set">
     <button id="history">Attendance History</button>
     <button id="setloc">Set Office Location</button>
+    <button id="employees">Employees</button>
  </div>
  </div>
  <script>
@@ -94,6 +95,13 @@
       content.classList.add('fade-out');
       setTimeout(() => {
         window.location.href = 'userDetails.html';
+      }, 500); // Duration of the fade-out
+    });
+    document.getElementById('employees').addEventListener('click', () => {
+      const content = document.getElementById('content');
+      content.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'empDetails.html';
       }, 500); // Duration of the fade-out
     });
 

@@ -49,9 +49,9 @@ function drawPolygon(map, polygon) {
         fillOpacity: 0.35,
   });
 }
-
+const company=sessionStorage.getItem('company');
 // Function to get current location and check if it's within the polygon
-const locref=doc(db,"company/Microsoft/Location/PolygonData");
+const locref=doc(db,`company/${company}/Location/PolygonData`);
 const loco=await getDoc(locref);
 const data=loco.data();
 function getLocationAndCheckRadius() {

@@ -155,14 +155,10 @@ async function handleSignIn() {
         console.log("User not found in Firestore, saving details...");
         await setDoc(userRef, userDetails);
         console.log("User details saved to Firestore!");
-        // Check if the device ID matches the stored device IDgit
-        window.location.href = "/Manager/mhome.html";
         
-        sessionStorage.setItem('userEmail', user.email);
-        sessionStorage.setItem('userUID', user.uid);
 
         
-      } else {
+      }
         // / Log successful login in Firestore
       
       // Save UID in sessionStorage
@@ -173,7 +169,7 @@ async function handleSignIn() {
       window.location.href = "/Manager/mhome.html";
 
        
-      }
+
 
       
 

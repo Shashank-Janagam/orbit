@@ -103,59 +103,37 @@ if (!userUID) {
   window.location.href = "/index.html"; // Redirect to login page
 } else {
   console.log("User is authenticated with UID:", userUID);
+  const pro=document.getElementById('profile');
+  
   // Fetch user data from Firestore using userUID
   const userRef = doc(db, `company/${company}/users`, userUID);
   const userDoc = await getDoc(userRef);
   const userData = userDoc.data();
 
+  const imgElement = document.getElementById('userPhoto');
+    
+  // Set the image source to the fetched URL
+  imgElement.src = userData.photoURL;
+
+  // Make the image visible after it's loaded
+  imgElement.onload = function() {
+    imgElement.style.display = 'block';   // Ensure it's visible
+    imgElement.style.opacity = 1;   
+  };
+  
+
   document.getElementById("userName").innerText = userData.name || "Not provided";
   document.getElementById("userEmail").innerText = userData.email || "Not provided";
-  document.getElementById("userPhoto").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
+  // document.getElementById("userPhoto").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
   document.getElementById("dob").innerText = "Date of birth: "+userData.Dob;
   document.getElementById("userMobile").innerText = "Mobile: "+userData.mobileNumber || "Not provided";
   document.getElementById('role').innerText=userData.Role|| "";
   document.getElementById('company').innerText=userData.Company|| "";
-
+  setTimeout(() => {
+    // console.log('This will be logged after 2 seconds');
+   // 2000 ms = 2 seconds
+pro.style.display='block';
+  pro.style.opacity=1;
+}, 500);
   // Display the user details...
 }
-
-// // Check if user is authenticated
-// onAuthStateChanged(auth, async (user) => {
-//   if (!user) {
-//     console.log("No user is authenticated!");
-//     alert("Please sign in to proceed.");
-//     window.location.href="/index.html";
-//   } else {
-//     console.log("Authenticated user:", user.uid);
-//     // When the user signs in successfully
-// sessionStorage.setItem('userUID', user.uid);
-
-
-//     // Now, fetch user data from Firestore
-//     const userRef = doc(db, "users", user.uid); // Reference to the user's document
-//     try {
-//       const userDoc = await getDoc(userRef);
-      
-//       if (userDoc.exists()) {
-//         // User data exists, retrieve and display it
-//         const userData = userDoc.data();
-//         // console.log("User data:", userData);
-
-//         // Display the data on the page
-//         document.getElementById("userName").innerText = userData.name || "Not provided";
-//         document.getElementById("userEmail").innerText = userData.email || "Not provided";
-//         document.getElementById("userPhoto").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
-//         document.getElementById("dob").innerText = "Date of birth: "+userData.Dob;
-//         document.getElementById("userMobile").innerText = "Mobile: "+userData.mobileNumber || "Not provided";
-//         document.getElementById('role').innerText=userData.Role|| "";
-//         document.getElementById('company').innerText=userData.Company|| "";
-
-//         // console.log(userData.age);
-//       } else {
-//         console.log("No user data found in Firestore.");
-//       }
-//     } catch (error) {
-//       console.error("Error fetching user data from Firestore:", error);
-//     }
-//   }
-// });

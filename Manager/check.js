@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getFirestore, collection,doc, query, where, orderBy,getDocs,getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your Firebase configuration
 const firebaseConfig = {
@@ -16,104 +16,208 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // Initialize Firestore
+const db = getFirestore(app);
 
+// Check if the user is authenticated
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    alert("Access Denied. Please log in.");
+    window.location.href = "/index.html"; // Redirect to login page
+    return;
+  }
+
+  const userUID = user.uid;
+  const company = sessionStorage.getItem('company');
+
+  const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.data();
+
+  if (company!=userData.Company) {
+    alert("Session expired. Please log in again.");
+    window.location.href = "/index.html";
+    return;
+  }
+
+  try {
+    // Check if the user role exists in the users collection
+    const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const userRole = userData.role; // Assuming the role is stored under 'role' in the user document
+
+      if (userRole === "manager") {
+        console.log("User is a manager. Access granted.");
+        sessionStorage.setItem('userRole', 'manager');
+      } else {
+        alert("Access Denied. Only managers can view this page.");
+        await signOut(auth);
+        window.location.href = "/index.html"; // Redirect to login page
+      }
+    } else {
+      alert("User not found in the database.");
+      await signOut(auth);
+      window.location.href = "/index.html";
+    }
+  } catch (error) {
+    console.error("Error fetching user role from Firestore:", error);
+    alert("Error verifying access. Please try again.");
+    window.location.href = "/index.html";
+  }
+
+});
 // Check if user is authenticated
 // Get userEmail from sessionStorage
-const userEmail = sessionStorage.getItem('userEmail');
+const userUID=sessionStorage.getItem('userUID');
+const company=sessionStorage.getItem('company');
+ // console.log(company);
+
+const userEmail=sessionStorage.getItem('userEmail')
+
 
 const search=document.getElementById("search");
 search.addEventListener('click', async () => {
-    const EmployeeI=document.getElementById('empid');
-    const EmployeeID=EmployeeI.value;
-    
-    const triggerShake = (input) => {
-            input.classList.remove('shake');
-            void input.offsetWidth; // Trigger a reflow
-            input.classList.add('shake');
-          };
-    if(!EmployeeID){
-        triggerShake(EmployeeI);
-        return ;
-        
-
-    }
-
-if (!userEmail) {
-  console.log("No user is authenticated!");
-  alert("Please sign in to proceed.");
-  window.location.href = "/index.html";  // Redirect to login page
-} else {
-  console.log("User is authenticated with Email:", userEmail);
+  const EmployeeI = document.getElementById('empid');
+  const EmployeeID = EmployeeI.value;
+  
+  const triggerShake = (input) => {
+      input.classList.remove('shake');
+      void input.offsetWidth; // Trigger a reflow
+      input.classList.add('shake');
+  };
+  if (!EmployeeID) {
+      triggerShake(EmployeeI);
+      return;
+  }
 
   try {
-    // Reference the attendance collection in Firestore
-    const company=sessionStorage.getItem('company');
-    const attendanceCollection = collection(db, `/company/${company}/Attendance`);
+      // Reference the attendance collection in Firestore
+      const company = sessionStorage.getItem('company');
+      const attendanceCollection = collection(db, `/company/${company}/Attendance`);
 
-    // Create query to filter by Email
-    const q = query(attendanceCollection, where("EmployeeID", "==", EmployeeID));
+      // Get today's date (define todayDate here)
+      const today = new Date();
+      const todayDate = today.toISOString().split('T')[0];  // Format date as YYYY-MM-DD
 
-    // Fetch query results
-    const querySnapshot = await getDocs(q);
+      // Create query to filter by EmployeeID and Date <= Today
+      const q = query(
+          attendanceCollection,
+          where("EmployeeID", "==", EmployeeID),  // Filter by EmployeeID
+          orderBy("Date", "desc")                 // Order by Date in descending order
+      );
 
-    if (!querySnapshot.empty) {
-      let tableRows = "";
+      // Fetch query results
+      const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        
-        // Build table rows
-        tableRows += `
-          <tr>
-            <td>${data.Date || "N/A"}</td>
-            <td>${data.EmployeeID || "N/A"}</td>
-            <td>${data.Role || "N/A"}</td>
-            <td>${data.Firstlogin || "N/A"}</td>
-            <td>${data.Lastlogin || "N/A"}</td>
-            <td>${data.Logindata || "N/A"}</td>
-          </tr>
-        `;
-      });
+      if (!querySnapshot.empty) {
+          let tableRows = "";
 
-      // Create table content
-      const profileContent = `
-        <h2 id="fel">Employee Attendance Details</h2>
-        <table class="styled-table">
-          <thead>
-            <tr>
-              <th>Attended Date</th>
-              <th>Employee ID</th>
-              <th>Role</th>
-              <th>First Login</th>
-              <th>Last Login</th>
-              <th>Logins</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tableRows}
-          </tbody>
-        </table>
-      `;
+          querySnapshot.forEach((doc) => {
+              const data = doc.data();
+              
+              // Build table rows
+              tableRows += `
+                <tr>
+                  <td>${data.Date || "N/A"}</td>
+                  <td>${data.EmployeeID || "N/A"}</td>
+                  <td>${data.Firstlogin || "N/A"}</td>
+                  <td>${data.Lastlogin || "N/A"}</td>
+                  <td>${data.Logindata || "N/A"}</td>
+                </tr>
+              `;
+          });
 
-      // Insert content into profile class
-      document.getElementById('profile').innerHTML = profileContent;
-    } else {
-      console.log("No attendance records found for this EmployeeID.");
-      document.getElementById('fel').innerHTML = "<p>Employee Not Found</p>";
-      
-    }
+          // Create table content
+          const profileContent = `
+              <h2 id="fel">Employee Attendance Details</h2>
+              <table class="styled-table">
+                  <thead>
+                      <tr>
+                          <th>Attended Date</th>
+                          <th>Employee ID</th>
+                          <th>First Login</th>
+                          <th>Last Login</th>
+                          <th>Logins</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      ${tableRows}
+                  </tbody>
+              </table>
+          `;
+
+          // Insert content into profile class
+          const pro=document.getElementById('profile');
+          pro.style.display='block';
+          document.getElementById('profile').innerHTML = profileContent;
+      } else {
+          console.log("No attendance records found for this EmployeeID.");
+          document.getElementById('fel').innerHTML = "<p>Employee Not Found</p>";
+      }
   } catch (error) {
-    console.error("Error fetching user data from Firestore:", error);
-    document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
+      console.error("Error fetching user data from Firestore:", error);
+      document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
   }
-}
 
-
-
+  try {
+      const company = sessionStorage.getItem('company');
+      // Fetch employee details from 'users' collection by EmployeeID
+      const usersCollection = collection(db, `/company/${company}/users`);
+      const q = query(usersCollection, where("EmployeeID", "==", EmployeeID));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0].data(); // Assume the first result is the correct one
+        // Display the selected employee's details in the profile form
+        displayEmployeeProfile(doc);
+      } else {
+        alert("Employee not found.");
+      }
+    } catch (error) {
+      console.error("Error fetching user data from Firestore:", error);
+    }
+  
 });
+
+
+function displayEmployeeProfile(data) {
+  //   console.log(data.Dob);
+  console.log("DOB: ", data.Dob);  // Check directly if it’s null or undefined
+  console.log("Mobile: ", data.mobileNumber);  // Check directly if it’s null or undefined
+  
+  
+  
+      const imgElement = document.getElementById('userPhoto');
+      
+      // Set the image source to the fetched URL
+      imgElement.src = data.photoURL;
+    
+      // Make the image visible after it's loaded
+      imgElement.onload = function() {
+        imgElement.style.display = 'block';   // Ensure it's visible
+        imgElement.style.opacity = 1;   
+             }       // Fade in effect (if using opacity)
+      const pro=document.getElementById('profile1');
+          pro.style.display='block';
+          pro.style.opacity=1;
+      
+   
+  
+    // Update the UI with employee data
+    document.getElementById("userName").innerText = data.name || "Not provided";
+    document.getElementById("userEmail").innerText = data.email || "Not provided";
+  //   document.getElementById("userPhoto").src = data.photoURL ; // Fallback to default image
+    document.getElementById("dob").innerText = "Date of birth: " + (data.Dob || "Not provided");
+    document.getElementById("userMobile").innerText = "Mobile: " + (data.mobileNumber || "Not provided");
+    
+    document.getElementById('role').innerText = data.Role || "Not provided";
+    document.getElementById('company').innerText = data.Company || "Not provided";
+  }
 
 
 // Function to generate the calendar dates for the selected month and year

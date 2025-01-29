@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getFirestore, collection, query,orderBy, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your Firebase configuration
 const firebaseConfig = {
@@ -40,7 +40,14 @@ if (!userEmail) {
     const employeeID = userEmail.replace("@gmail.com", ""); 
     // Example if the email is used for EmployeeID
     console.log(employeeID);
-    const q = query(attendanceCollection, where("EmployeeID", "==", employeeID));
+    const today = new Date();
+
+      // Create query to filter by EmployeeID and Date <= Today
+      const q = query(
+          attendanceCollection,
+          where("EmployeeID", "==", employeeID),  // Filter by EmployeeID
+          orderBy("Date", "desc")                 // Order by Date in descending order
+      );
 
     // Fetch query results
     const querySnapshot = await getDocs(q);
@@ -56,7 +63,6 @@ if (!userEmail) {
           <tr>
             <td>${data.Date || "N/A"}</td>
             <td>${data.EmployeeID || "N/A"}</td>
-            <td>${data.Role || "N/A"}</td>
             <td>${data.Firstlogin || "N/A"}</td>
             <td>${data.Lastlogin || "N/A"}</td>
             <td>${data.Logindata || "N/A"}</td>
@@ -72,7 +78,6 @@ if (!userEmail) {
             <tr>
               <th>Attended Date</th>
               <th>Employee ID</th>
-              <th>Role</th>
               <th>First Login</th>
               <th>Last Login</th>
               <th>Logins</th>

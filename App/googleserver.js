@@ -68,24 +68,7 @@ async function handleSignIn() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
 
-        // Check if the device ID matches the stored device IDgit
-        if (userData.deviceID && userData.deviceID !== currentDeviceID) {
-          console.error("You can only log in from the device you initially used.");
-          signOut(auth)
-                    .then(() => {
-                      console.log("User has been logged out automatically.");
-                    })
-                    .catch((error) => {
-                      console.error("Error logging out the user:", error);
-                    });
-          sessionStorage.setItem('userUID', user.uid);
-          sessionStorage.setItem('userEmail', user.email);
-
-
-          window.location.href = "/invalidDevice.html"; // Redirect to a page showing the device restriction message
-
-          return;
-        }
+     
       } else {
         // If the user is logging in for the first time, register their device
         const userDetails = {
@@ -95,7 +78,9 @@ async function handleSignIn() {
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Employee",
           Company: companyName,
-          deviceID: currentDeviceID, // Store the device ID
+          deviceID: currentDeviceID,
+          Dob:"",
+          mobileNumber:"", // Store the device ID
         };
 
         console.log("User not found in Firestore, saving details...");

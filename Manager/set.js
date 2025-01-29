@@ -25,21 +25,25 @@ async function fetchUserData() {
     const userRef = doc(db, `company/${company}/managers`, userUID); // Reference to the user's document
     const userDoc = await getDoc(userRef);
     if(!userDoc.exists()){
-        alert("Not a manager");
+        // alert("Not a manager");
         window.location.href="/index.html";
         return 0;
     }
   }
 }
 
+
 let map;
 let polygon;
 let markers = [];
+const userData =  fetchUserData(); // Fetch user data before checking
+
 
 // Initialize map after page load
 function initMap() {
   console.log('initMap function is being called');
   const defaultLocation = { lat: 0, lng: 0 };
+  
 
   map = new google.maps.Map(document.getElementById("maps"), {
     center: defaultLocation,

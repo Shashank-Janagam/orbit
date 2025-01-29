@@ -607,6 +607,11 @@ font-style: italic;
     height: 575px;
     transition: opacity 0.5s ease; /* Smooth fade effect */
 
+
+    transition: opacity 0.3s ease-in-out; /* For smooth transition */
+    object-fit: cover;
+
+
   }
   
   /* Image */
@@ -616,8 +621,11 @@ font-style: italic;
     width: 150px;
     height: 150px;
     object-fit: cover;
+    margin-left: 25%;
+
+    transition: opacity 0.3s ease-in-out; /* For smooth transition */
+    opacity: 0;  /* Start with invisible image */
   }
-  
   /* User Info */
   #userName {
     font-size: 1.2rem;

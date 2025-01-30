@@ -445,9 +445,10 @@ input {
      */
      align-items: center;
     display: flex;
+    
     gap: 10px;
     width: 90%;
-    margin-top: 1%;
+    margin-top: 20%;
     margin-left: 1vmax;
   }
 

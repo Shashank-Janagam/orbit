@@ -1,7 +1,8 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, collection,doc, query, where, orderBy,getDocs,getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy,getDocs,getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // Replace with your Firebase configuration
 const firebaseConfig = {
@@ -261,6 +262,8 @@ function generateCalendar() {
     }
 }
 
+// let dateselected="date";
+const EmployeeID=document.getElementById('empid').value;
 // Function to handle date selection
 function selectDate(dateCell) {
     // Remove the selected class from any other date
@@ -280,82 +283,16 @@ function selectDate(dateCell) {
     // Format the selected date in YYYY-MM-DD format
     const formattedDate = `${year}-${(parseInt(month) + 1).toString().padStart(2, '0')}-${selectedDateValue.toString().padStart(2, '0')}`;
     
-    fetchAttendanceData(formattedDate);
+
+      empdate(formattedDate);
+
+    
+    // dateselected=formattedDate;
 }
 
 // Function to fetch attendance data from Firestore based on the selected date
-async function fetchAttendanceData(selectedDate) {
-    // Get the selected employee's ID from sessionStorage
-    const userEmail = sessionStorage.getItem('userEmail');
-    const employeeID = document.getElementById('empid').value;  // Assuming empid is an input field
-    if (!userEmail) {
-        alert("Please sign in to proceed.");
-        window.location.href = "/index.html";  // Redirect to login page
-        return;
-    }
 
-    try {
-      const company=sessionStorage.getItem('company');
-      const attendanceCollection = collection(db, `/company/${company}/Attendance`);
-        const q = query(attendanceCollection, where("EmployeeID", "==", employeeID), where("Date", "==", selectedDate));
-        const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-            const doc = querySnapshot.docs[0].data(); // Assume the first result is the correct one
-            // Display the selected date's attendance data in a form-like structure
-            displayProfileForm(doc);
-        } else {
-            document.getElementById('profile-form').innerHTML=`<p></p>`; 
-           document.getElementById('fel').innerHTML = `<p>Absent On ${selectedDate}</p>`;
-
-        }
-    } catch (error) {
-        console.error("Error fetching user data from Firestore:", error);
-        document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
-    }
-}
-
-// Function to display selected date's details in a form// Function to display selected date's details in a form
-// Function to display selected date's details in a form
-function displayProfileForm(data) {
-    const profileContent = `
-        <h2 id="fel">Attendance Details for Selected Date</h2>
-        <div class="profile-form" id="profile-form">
-        <div class="profile-item">
-        <label for="logins"     >Name         :            </label>
-        <p id="logins">${data.Name || "N/A"}</p>
-    </div>
-    <div class="profile-item">
-        <label for="empid1"     >Employee ID    :</label>
-        <p id="empid1">${data.EmployeeID || "N/A"}</p>
-    </div>
-    
-    <div class="profile-item">
-        <label for="role"       >Role           :</label>
-        <p id="role">${data.Role || "N/A"}</p>
-    </div>
-    
-    <div class="profile-item">
-        <label for="first-login">First Login    :  </label>
-        <p id="first-login">${data.Firstlogin || "N/A"}</p>
-    </div>
-    
-    <div class="profile-item">
-        <label for="last-login" >Last Login     :  </label>
-        <p id="last-login">${data.Lastlogin || "N/A"}</p>
-    </div>
-    
-    <div class="profile-item">
-        <label for="logins"     >Logins         :            </label>
-        <p id="logins">${data.Logindata || "N/A"}</p>
-    </div>
-    
-</div>
-
-    `;
-
-    document.getElementById('profile').innerHTML = profileContent;
-}
 
 
 
@@ -386,3 +323,210 @@ window.onload = generateCalendar;
 // Update calendar when month or year is changed
 document.getElementById("calendar__month").addEventListener("change", generateCalendar);
 document.getElementById("calendar__year").addEventListener("change", generateCalendar);
+
+
+
+
+
+// async function empattend() {
+    
+    try {
+      const today = new Date();
+const formattedDate = today.toISOString().split('T')[0]; 
+        console.log(formattedDate);
+      const company=sessionStorage.getItem('company');
+      const attendanceCollection = collection(db, `/company/${company}/Attendance`);
+        const q = query(attendanceCollection, where("Date", "==", formattedDate));
+        const querySnapshot = await getDocs(q);
+        
+  
+      if (!querySnapshot.empty) {
+        const employeeList = document.getElementById('employeeList'); // Add this element in your HTML to display employees
+        // employeeList.innerHTML = ''; // Clear the list first
+  
+        
+        let tableRows = "";
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+        
+          // Determine color for Status
+          let statusColor = "green"; // Default to green
+          if (data.Status === "Absent") {
+            statusColor = "red";
+          }
+        
+          // Build table rows with inline style for the status column
+          tableRows += `
+            <tr>
+              <td>${data.Date || "--"}</td>
+              <td>${data.EmployeeID || "--"}</td> 
+              <td style="color: ${statusColor};">${data.Status || "--"}</td>
+              <td>${data.Role || "--"}</td>
+              <td>${data.Firstlogin || "--"}</td>
+              <td>${data.Lastlogin || "--"}</td>
+              <td>${data.Logindata || "--"}</td>
+            </tr>
+          `;
+        });
+        
+        
+
+       
+
+        // Create table content
+        const profileContent = `
+            <h2 id="fel">Today Attendance Log</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Attended Date</th>
+                        <th>Employee ID</th>
+                        <th>Status</th>
+                        <th>Role</th>
+                        <th>First Login</th>
+                        <th>Last Login</th>
+                        <th>Logins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        `;
+
+        // Insert content into profile class
+        const pro=document.getElementById('profile');
+        pro.style.display='block';
+        document.getElementById('profile').innerHTML = profileContent;
+        pro.style.width="700px";
+
+   
+      } else {
+        console.log("No employees found.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  // }
+  async function empdate(selectedDate) {
+    try {
+      const company = sessionStorage.getItem('company');
+      const attendanceCollection = collection(db, `/company/${company}/Attendance`);
+      const q = query(attendanceCollection, where("Date", "==", selectedDate));
+
+      // Await the Firestore query
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+          let tableRows = "";
+
+          querySnapshot.forEach((doc) => {
+              const data = doc.data();
+              let statusColor = "green"; // Default to green
+              if (data.Status === "Absent") {
+                statusColor = "red";
+              }
+              // Build table rows
+              tableRows += `
+                <tr>
+                  <td>${data.Date || "-"}</td>
+                  <td>${data.EmployeeID || "-"}</td>
+              <td style="color: ${statusColor};">${data.Status || "--"}</td>
+                  <td>${data.Role||"NA"}</td>
+                  <td>${data.Firstlogin || "-"}</td>
+                  <td>${data.Lastlogin || "-"}</td>
+                  <td>${data.Logindata || "-"}</td>
+                </tr>
+              `;
+          });
+
+          // Create table content
+          const profileContent = `
+              <h2 id="fel">Attendance Details on ${selectedDate}</h2>
+              <table class="styled-table">
+                  <thead>
+                      <tr>
+                          <th>Attended Date</th>
+                          <th>Employee ID</th>
+                          <th>Status</th>
+                          <th>Role</th>
+                          <th>First Login</th>
+                          <th>Last Login</th>
+                          <th>Logins</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      ${tableRows}
+                  </tbody>
+              </table>
+          `;
+
+          // Insert content into profile class
+          const pro = document.getElementById('profile');
+          pro.style.display = 'block';
+          pro.style.width="700px";
+          pro.innerHTML = profileContent;
+      } else {
+          document.getElementById('profile').innerHTML = `<p>No attendance records found for ${selectedDate}.</p>`;
+      }
+  } catch (error) {
+      console.error("Error fetching attendance records from Firestore:", error);
+      document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
+  }
+}
+
+
+
+const freeze=document.getElementById('freeze');
+freeze.addEventListener("click", async () => {
+  try {
+    const company = sessionStorage.getItem('company');
+    const today = new Date();
+    const todayDate = today.toISOString().split('T')[0];  // Format date as yyyy-mm-dd
+
+    // Get all employees in the company
+    const employeesCollection = collection(db, `/company/${company}/users`);
+    const employeesSnapshot = await getDocs(employeesCollection);
+
+    // Get the attendance data for the day
+    const attendanceCollection = collection(db, `/company/${company}/Attendance`);
+    const attendanceQuery = query(attendanceCollection, where("Date", "==", todayDate));
+    const attendanceSnapshot = await getDocs(attendanceQuery);
+
+    const attendedEmployeeIDs = new Set();
+    attendanceSnapshot.forEach((doc1) => {
+      const data = doc1.data();
+      attendedEmployeeIDs.add(data.EmployeeID);
+    });
+
+    // Loop through employees and mark those who haven't attended as absent
+    for (const doc2 of employeesSnapshot.docs) {
+      const employee = doc2.data();
+      const employeeID = employee.EmployeeID;
+
+      if (!attendedEmployeeIDs.has(employeeID)) {
+        try {
+          // Create a document for the absent employee
+          const attendanceDocRef = doc(db, `company/${company}/Attendance/${employeeID}_${todayDate}`);
+          await setDoc(attendanceDocRef, {
+            EmployeeID: employeeID,
+            Date: todayDate,
+            Status: "Absent",
+            Role:employee.Role,
+          });
+          console.log("Attendance successfully marked as absent for:", employeeID);
+        } catch (error) {
+          console.error("Error freezing attendance and marking absent: ", error);
+          alert(`Error freezing attendance for ${employeeID}: ${error.message}`);
+        }
+      }
+    }
+
+    // alert("Attendance has been frozen for today, and absent employees have been marked.");
+    document.getElementById('fel').textContent="Attendance has been frozen for today, and absent employees have been marked.";
+  } catch (error) {
+    console.error("Error freezing attendance and marking absent:", error); 
+    alert("Error freezing attendance. Please try again.");
+  }
+});

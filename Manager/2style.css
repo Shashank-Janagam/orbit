@@ -117,7 +117,7 @@ table.styled-table tr:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   overflow: scroll;  /* Ensure scrolling is enabled */
   max-height: 500px;  /* Set a max height */
-  width: 60%;
+  /* width: 70%; */
   margin-left: 10px;
   margin-top: 2.3%;
   text-align: center;
@@ -126,7 +126,7 @@ table.styled-table tr:hover {
   padding-top: 0px;
   border-radius: 8px;
   transition: opacity 0.5s ease; /* Smooth fade effect */
-  width: 610px;
+  width: 650px;
   /* Invisible scrollbar styling */
   scrollbar-width: thin;  /* For Firefox */
   scrollbar-color: transparent transparent;  /* For Firefox */

@@ -233,3 +233,28 @@ transition: transform 0.6s ease;
     margin-left: 30%;
     margin-top: 10%;
   }
+
+
+  #freeze{
+    background-color:antiquewhite;
+    font-size: 1rem;
+    font-weight: bold;
+    color:#333;
+    justify-content: center;
+    align-content: center;
+    height: 40px;
+    border-radius: 8px;
+    width: 150px;
+    margin-left: 60%;
+    padding-left: 5px;
+    
+
+  }
+  #freeze:hover{
+    font-size: 1.01rem;
+    color:#555;
+    transform: scale(1.02); /* Slight zoom effect */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    border: none;  
+  }
+ 

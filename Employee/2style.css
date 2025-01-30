@@ -85,23 +85,92 @@ table.styled-table tr:hover {
   color: white;
   transition: background-color 0.3s ease-in-out;
 }
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5%;
+  background-color: white;
+  border-radius: 8px;
+  margin-left: 3%;
+  /* height: 543px;
+   */
+  width: auto;
+height: auto;
+}
 
+.outer-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1); /* Light transparent outer effect */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
 
+.pie-chart {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: conic-gradient(
+      rgb(55, 148, 55) 0deg 50%,  /* Present */
+      rgb(227, 128, 128) 50% 100%      /* Absent */
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  position: absolute;
+}
 
+#contains{
+  display: flex;
+}
+
+.inner-circle {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.legend {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.legend span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+}
+
+.green { background: rgb(168, 204, 168); }
+.red { background: rgb(234, 147, 147); }
 
 .profile {
     /* padding-top: 10%; */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     max-width:70%;
-    margin: auto;
+    /* margin: auto; */
     text-align: center;
     font-family: arial;
     background-color: #fff;
-    padding: 20px;
+    /* padding: 20px; */
     /* padding-top: 10%; */
+    margin-left: 2%;
     margin-top:5%;
     border-radius: 8px;
-    height: auto;
+    /* height: auto; */
     transition: opacity 0.5s ease; /* Smooth fade effect */
+    overflow: scroll;
+    scrollbar-width: thin;  /* For Firefox */
+    scrollbar-color: transparent transparent; 
 
   }

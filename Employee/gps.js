@@ -221,6 +221,7 @@ async function logAttendance() {
                 EmployeeID: userData.EmployeeID,
                 Role: userData.Role,
                 Date: date,
+                Status:"Present",
                 Logindata: time,
                 Firstlogin:time,
                 Lastlogin:time,
@@ -230,6 +231,11 @@ async function logAttendance() {
               await setDoc(doc(db, collectionName, docId), attendanceData);
               console.log("Attendance logged successfully!");
             }else{
+
+              if(attendanceDoc.data().Status=="Absent"){
+                document.getElementById('result').textContent="Unable to attend; the time has passed"
+
+              }else{
               // console.log("alredy updated");
               const oldTime = attendanceDoc.data().Logindata || ""; // Get existing time data
               const updatedTime = `${oldTime}\n\n${time}`; // Append new time
@@ -237,6 +243,7 @@ async function logAttendance() {
               await setDoc(attendanceDocRef, { Logindata: updatedTime },{ merge: true });
               await setDoc(attendanceDocRef,{Lastlogin:time},{merge:true});
               console.log("Attendance updated successfully with new time!");
+              }
 
             }
             } else {

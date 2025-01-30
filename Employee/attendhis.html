@@ -12,6 +12,7 @@
   <!-- <script type="module" src="userDetails.js"></script> Include the external JS file -->
   <link rel="stylesheet" href="2style.css"> <!-- Link to the updated external CSS file -->
   <link rel="icon" type="image/png" href="/Images/icon.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     
@@ -46,6 +47,30 @@
     
 
 }
+
+.chart-container {
+      width: 250px;
+      margin: 20px auto;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+      font-size: 16px;
+    }
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .blue { background-color: #2196F3; }
+    .orange { background-color:#FF9800; }
  
   </style>
 </head>
@@ -60,9 +85,18 @@
       Orbit
   </div>
   </div>
+  <div id="contains">
   <div class="profile" id="profile" >
+    
     </div>
- 
+    <div class="chart-container">
+      <canvas id="attendanceChart"></canvas>
+      
+    </div>
+
+    
+
+</div>
   <style>
     body{
       background-image: url(/Images/background_in_space.webp);

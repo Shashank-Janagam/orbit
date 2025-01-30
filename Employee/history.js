@@ -23,7 +23,8 @@ const db = getFirestore(app); // Initialize Firestore
 // Check if user is authenticated
 // Get userEmail from sessionStorage
 const userEmail = sessionStorage.getItem('userEmail');
-
+let presentCount=0;
+let absentCount=0;
 if (!userEmail) {
   console.log("No user is authenticated!");
   alert("Please sign in to proceed.");
@@ -57,27 +58,43 @@ if (!userEmail) {
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+      
+
+        if (data.Status === "Present") {
+          presentCount++;
+      } else if (data.Status === "Absent") {
+          absentCount++;
+      }
         
         // Build table rows
+        let statusColor = "green"; // Default to green
+              if (data.Status === "Absent") {
+                statusColor = "red";
+              }
         tableRows += `
           <tr>
-            <td>${data.Date || "N/A"}</td>
-            <td>${data.EmployeeID || "N/A"}</td>
-            <td>${data.Firstlogin || "N/A"}</td>
-            <td>${data.Lastlogin || "N/A"}</td>
-            <td>${data.Logindata || "N/A"}</td>
+            <td>${data.Date || "--"}</td>
+            <td>${data.EmployeeID || "--"}</td>
+            <td style="color: ${statusColor};">${data.Status || "--"}</td>
+            <td>${data.Firstlogin || "--"}</td>
+            <td>${data.Lastlogin || "--"}</td>
+            <td>${data.Logindata || "--"}</td>
           </tr>
         `;
       });
 
       // Create table content
       const profileContent = `
+      <div id="hed">
         <h2>Your Attendance History</h2>
+       
+        </div>
         <table class="styled-table">
           <thead>
             <tr>
               <th>Attended Date</th>
               <th>Employee ID</th>
+              <th>Status</th>
               <th>First Login</th>
               <th>Last Login</th>
               <th>Logins</th>
@@ -88,6 +105,7 @@ if (!userEmail) {
           </tbody>
         </table>
       `;
+      drawChart(presentCount, absentCount);
 
       // Insert content into profile class
       document.getElementById('profile').innerHTML = profileContent;
@@ -100,5 +118,29 @@ if (!userEmail) {
     document.getElementById('profile').innerHTML = "<p>Error fetching records. Please try again later.</p>";
   }
 }
+function drawChart(present, absent) {
+  const ctx = document.getElementById('attendanceChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Present', 'Absent'],
+      datasets: [{
+        data: [present, absent],
+        backgroundColor: ['#2D79F3', '#F39C12'], // Colors for Present & Absent
+        borderWidth: 2, // You can adjust the thickness if needed
+        borderColor: ['rgba(0,0,0,0)', 'rgba(0,0,0,0)'], // Transparent Borders
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
 
 

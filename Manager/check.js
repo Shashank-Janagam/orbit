@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
   const userUID = user.uid;
   const company = sessionStorage.getItem('company');
 
-  const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+  const userRef = doc(db, `company/${company}/managers`, userUID); // Fetch user data from Firestore
     const userDoc = await getDoc(userRef);
     const userData = userDoc.data();
 
@@ -45,14 +45,14 @@ onAuthStateChanged(auth, async (user) => {
 
   try {
     // Check if the user role exists in the users collection
-    const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+    const userRef = doc(db, `company/${company}/managers`, userUID); // Fetch user data from Firestore
     const userDoc = await getDoc(userRef);
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const userRole = userData.role; // Assuming the role is stored under 'role' in the user document
+      const userRole = userData.Role; // Assuming the role is stored under 'role' in the user document
 
-      if (userRole === "manager") {
+      if (userRole === "Manager") {
         console.log("User is a manager. Access granted.");
         sessionStorage.setItem('userRole', 'manager');
       } else {
@@ -102,8 +102,7 @@ search.addEventListener('click', async () => {
       const attendanceCollection = collection(db, `/company/${company}/Attendance`);
 
       // Get today's date (define todayDate here)
-      const today = new Date();
-      const todayDate = today.toISOString().split('T')[0];  // Format date as YYYY-MM-DD
+        // Format date as YYYY-MM-DD
 
       // Create query to filter by EmployeeID and Date <= Today
       const q = query(
@@ -331,8 +330,12 @@ document.getElementById("calendar__year").addEventListener("change", generateCal
 // async function empattend() {
     
     try {
-      const today = new Date();
-const formattedDate = today.toISOString().split('T')[0]; 
+      const currentDate = new Date();
+
+              const year = currentDate.getFullYear();
+              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
+              const formattedDate = `${year}-${month}-${day}`; // 
         console.log(formattedDate);
       const company=sessionStorage.getItem('company');
       const attendanceCollection = collection(db, `/company/${company}/Attendance`);
@@ -404,6 +407,11 @@ const formattedDate = today.toISOString().split('T')[0];
    
       } else {
         console.log("No employees found.");
+        const pro=document.getElementById('profile');
+        pro.style.display='block';
+        document.getElementById('profile').innerHTML = "No Employees Attended";
+        pro.style.width="700px";
+        
       }
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -482,8 +490,12 @@ const freeze=document.getElementById('freeze');
 freeze.addEventListener("click", async () => {
   try {
     const company = sessionStorage.getItem('company');
-    const today = new Date();
-    const todayDate = today.toISOString().split('T')[0];  // Format date as yyyy-mm-dd
+    const currentDate = new Date();
+
+              const year = currentDate.getFullYear();
+              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
+              const todayDate = `${year}-${month}-${day}`; //   // Format date as yyyy-mm-dd
 
     // Get all employees in the company
     const employeesCollection = collection(db, `/company/${company}/users`);

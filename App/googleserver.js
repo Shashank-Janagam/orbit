@@ -176,5 +176,5 @@ async function handleSignIn() {
 window.onload = () => {
   setTimeout(() => {
     handleSignIn();
-  }, 1000); // Delay for 1 second
+  }, 500); // Delay for 1 second
 };

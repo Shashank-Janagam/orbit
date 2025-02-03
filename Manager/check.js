@@ -334,16 +334,27 @@ document.getElementById("calendar__year").addEventListener("change", generateCal
 
 
 
-
+let formattedDate=null;
+let time=null;
 // async function empattend() {
     
     try {
-      const currentDate = new Date();
 
-              const year = currentDate.getFullYear();
-              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
-              const formattedDate = `${year}-${month}-${day}`; // 
+      try {
+        const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
+        const data = await response.json();
+  
+        // Extract date components
+        const [month,day,year] = data.date.split("/"); // API returns YYYY-MM-DD
+  
+        // Format as YYYY/MM/DD
+         formattedDate = `${year}-${month}-${day}`;
+         time=data.time;
+  
+        console.log("Correct IST Time:", `${formattedDate} ${data.time}`);
+    } catch (error) {
+        console.error("Error fetching time:", error);
+    }
         console.log(formattedDate);
       const company=sessionStorage.getItem('company');
       const attendanceCollection = collection(db, `/company/${company}/Attendance`);

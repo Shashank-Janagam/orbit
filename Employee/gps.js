@@ -161,7 +161,8 @@ function getLocationAndCheckRadius() {
 
 // Call the function to get location and check polygon
 
-
+let formattedDate=null;
+let time=null;
 
 async function logAttendance() {
   try {
@@ -184,27 +185,32 @@ async function logAttendance() {
             const userDoc = await getDoc(userRef);
 
             if (userDoc.exists()) {
-              // User data exists, retrieve and display it
+              // User data exists, retrieve and
+              //  display it
+              
               const userData = userDoc.data();
-              const currentDate = new Date();
+              try {
+                const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
+                const data = await response.json();
+          
+                // Extract date components
+                const [month,day,year] = data.date.split("/"); // API returns YYYY-MM-DD
+          
+                // Format as YYYY/MM/DD
+                 formattedDate = `${year}-${month}-${day}`;
+                 time=data.time;
+          
+                console.log("Correct IST Time:", `${formattedDate} ${data.time}`);
+            } catch (error) {
+                console.error("Error fetching time:", error);
+            }
+      // Format as YYYY/MM/DD
 
-              const year = currentDate.getFullYear();
-              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
-              const date = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
-
-              const docId = `${userData.EmployeeID}_${date}`;
-
-
-
+      const docId = `${userData.EmployeeID}_${formattedDate}`;
               const attendanceDocRef = doc(db, collectionName, docId);
               const attendanceDoc = await getDoc(attendanceDocRef);
               // const timedata=attendanceDoc.data();
-              // console.log(timedata.Time.toString());
-              const hours = String(currentDate.getHours()).padStart(2, "0");
-              const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-              const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-              const time = `${hours}:${minutes}:${seconds}`;
+            
 
               if(!attendanceDoc.exists()){
 
@@ -220,12 +226,11 @@ async function logAttendance() {
                 Name:userData.name,
                 EmployeeID: userData.EmployeeID,
                 Role: userData.Role,
-                Date: date,
+                Date: formattedDate,
                 Status:"Present",
                 Logindata: time,
                 Firstlogin:time,
                 Lastlogin:time,
-                attendanceTime: Timestamp.fromDate(currentDate),
               };
 
               await setDoc(doc(db, collectionName, docId), attendanceData);
@@ -236,13 +241,16 @@ async function logAttendance() {
                 document.getElementById('result').textContent="Unable to attend; the time has passed"
 
               }else{
-              // console.log("alredy updated");
+              console.log("alredy updated");
+              console.log(formattedDate);
               const oldTime = attendanceDoc.data().Logindata || ""; // Get existing time data
               const updatedTime = `${oldTime}\n\n${time}`; // Append new time
               
               await setDoc(attendanceDocRef, { Logindata: updatedTime },{ merge: true });
               await setDoc(attendanceDocRef,{Lastlogin:time},{merge:true});
               console.log("Attendance updated successfully with new time!");
+              document.getElementById('result').textContent="Already attended"
+
               }
 
             }
@@ -282,4 +290,5 @@ async function logAttendance() {
 
 
 // }, 10000); // 10000 milliseconds = 10 seconds
+
 

@@ -197,7 +197,8 @@ async function logAttendance() {
                 const [month,day,year] = data.date.split("/"); // API returns YYYY-MM-DD
           
                 // Format as YYYY/MM/DD
-                 formattedDate = `${year}-${month}-${day}`;
+                 formattedDate = `${day}-${month}-${year}`;
+
                  time=data.time;
           
                 console.log("Correct IST Time:", `${formattedDate} ${data.time}`);
@@ -210,6 +211,13 @@ async function logAttendance() {
               const attendanceDocRef = doc(db, collectionName, docId);
               const attendanceDoc = await getDoc(attendanceDocRef);
               // const timedata=attendanceDoc.data();
+              const currentDate = new Date();
+
+              const year = currentDate.getFullYear();
+              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
+              const date = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+
             
 
               if(!attendanceDoc.exists()){
@@ -227,6 +235,7 @@ async function logAttendance() {
                 EmployeeID: userData.EmployeeID,
                 Role: userData.Role,
                 Date: formattedDate,
+                Date2:date,
                 Status:"Present",
                 Logindata: time,
                 Firstlogin:time,
@@ -238,8 +247,7 @@ async function logAttendance() {
             }else{
 
               if(attendanceDoc.data().Status=="Absent"){
-                document.getElementById('result').textContent="Unable to attend; the time has passed"
-
+                window.location.href="Absent.html";
               }else{
               console.log("alredy updated");
               console.log(formattedDate);

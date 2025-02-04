@@ -108,7 +108,7 @@ search.addEventListener('click', async () => {
       const q = query(
           attendanceCollection,
           where("EmployeeID", "==", EmployeeID),  // Filter by EmployeeID
-          orderBy("Date", "desc")                 // Order by Date in descending order
+          orderBy("Date2", "desc")                 // Order by Date in descending order
       );
 
       // Fetch query results
@@ -288,10 +288,10 @@ function selectDate(dateCell) {
     const year = document.getElementById("calendar__year").value;
     
     // Format the selected date in YYYY-MM-DD format
-    const formattedDate = `${year}-${(parseInt(month) + 1).toString().padStart(2, '0')}-${selectedDateValue.toString().padStart(2, '0')}`;
+    const formattedDat = `${selectedDateValue.toString().padStart(2, '0')}-${(parseInt(month) + 1).toString().padStart(2, '0')}-${year}`;
     
 
-      empdate(formattedDate);
+      empdate(formattedDat);
 
     
     // dateselected=formattedDate;
@@ -334,11 +334,12 @@ document.getElementById("calendar__year").addEventListener("change", generateCal
 
 
 
-let formattedDate=null;
-let time=null;
+
 // async function empattend() {
     
     try {
+      let formattedDate=null;
+let time=null;
 
       try {
         const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
@@ -348,14 +349,13 @@ let time=null;
         const [month,day,year] = data.date.split("/"); // API returns YYYY-MM-DD
   
         // Format as YYYY/MM/DD
-         formattedDate = `${year}-${month}-${day}`;
+         formattedDate = `${day}-${month}-${year}`;
          time=data.time;
   
         console.log("Correct IST Time:", `${formattedDate} ${data.time}`);
     } catch (error) {
         console.error("Error fetching time:", error);
     }
-        console.log(formattedDate);
       const company=sessionStorage.getItem('company');
       const attendanceCollection = collection(db, `/company/${company}/Attendance`);
         const q = query(attendanceCollection, where("Date", "==", formattedDate));
@@ -508,23 +508,40 @@ let time=null;
 const freeze=document.getElementById('freeze');
 freeze.addEventListener("click", async () => {
   try {
+    let formattedDate=null;
+    let time=null;
     const company = sessionStorage.getItem('company');
-    const currentDate = new Date();
+    try {
+      const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
+      const data = await response.json();
 
-              const year = currentDate.getFullYear();
-              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
-              const todayDate = `${year}-${month}-${day}`; //   // Format date as yyyy-mm-dd
+      // Extract date components
+      const [month,day,year] = data.date.split("/"); // API returns YYYY-MM-DD
 
-    // Get all employees in the company
+      // Format as YYYY/MM/DD
+       formattedDate = `${day}-${month}-${year}`;
+       time=data.time;
+
+      console.log("Correct IST Time:", `${formattedDate} ${data.time}`);
+  } catch (error) {
+      console.error("Error fetching time:", error);
+  }
     const employeesCollection = collection(db, `/company/${company}/users`);
     const employeesSnapshot = await getDocs(employeesCollection);
 
     // Get the attendance data for the day
     const attendanceCollection = collection(db, `/company/${company}/Attendance`);
-    const attendanceQuery = query(attendanceCollection, where("Date", "==", todayDate));
+    const attendanceQuery = query(attendanceCollection, where("Date", "==", formattedDate));
     const attendanceSnapshot = await getDocs(attendanceQuery);
 
+    const currentDate = new Date();
+
+              const year = currentDate.getFullYear();
+              const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+              const day = String(currentDate.getDate()).padStart(2, '0'); // Day of the month
+              const date = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+
+            
     const attendedEmployeeIDs = new Set();
     attendanceSnapshot.forEach((doc1) => {
       const data = doc1.data();
@@ -539,10 +556,11 @@ freeze.addEventListener("click", async () => {
       if (!attendedEmployeeIDs.has(employeeID)) {
         try {
           // Create a document for the absent employee
-          const attendanceDocRef = doc(db, `company/${company}/Attendance/${employeeID}_${todayDate}`);
+          const attendanceDocRef = doc(db, `company/${company}/Attendance/${employeeID}_${formattedDate}`);
           await setDoc(attendanceDocRef, {
             EmployeeID: employeeID,
-            Date: todayDate,
+            Date: formattedDate,
+            Date2:date,
             Status: "Absent",
             Role:employee.Role,
           });

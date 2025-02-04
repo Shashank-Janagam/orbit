@@ -47,7 +47,7 @@ if (!userEmail) {
       const q = query(
           attendanceCollection,
           where("EmployeeID", "==", employeeID),  // Filter by EmployeeID
-          orderBy("Date", "desc")                 // Order by Date in descending order
+          orderBy("Date2", "desc")                 // Order by Date in descending order
       );
 
     // Fetch query results

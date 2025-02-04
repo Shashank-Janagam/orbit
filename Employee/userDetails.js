@@ -134,6 +134,6 @@ if (!userUID) {
    // 2000 ms = 2 seconds
 pro.style.display='block';
   pro.style.opacity=1;
-}, 500);
+}, 475);
   // Display the user details...
 }

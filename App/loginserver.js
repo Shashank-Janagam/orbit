@@ -152,6 +152,9 @@ if (signinButton) {
         triggerShake(passwordInput);
       } else {
         console.error(`Error: ${error.message}`);
+        triggerShake(passwordInput);
+
+
       }
     }
   });

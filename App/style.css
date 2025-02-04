@@ -78,6 +78,12 @@ display: flex; /* Use flexbox to arrange the buttons */
     border-color: white;
     height: 40px;
     padding: 0 10px;
+
+    font-family: sans-serif;
+
+    font-size: 1rem;
+    color: #555;
+    font-weight: bold;
   }
   
   /* button {

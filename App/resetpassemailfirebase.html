@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color:#555; /* Default text color for better readability */
+        }
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #333; /* Text color inside the container */
+        }
+        .email-header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .email-header h1 {
+            color: #FFF4A3;
+            font-weight: 700;
+            margin-top: 30px !important;
+            font-size: 23px;
+            margin: 0;
+        }
+        .email-body {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 20px 0;
+            color: #333; /* Ensure text in body is readable */
+        }
+        .email-body a {
+            /* color: #007bff; */
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .email-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 30px;
+        }
+        .email-footer p {
+            margin: 5px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #eda933;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-left: 33%;
+            border: none;
+            text-align: center;
+            
+        }
+        .cta-button:hover {
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .email-background {
+            background-image: url('https://www.w3schools.com/images/background_in_space.webp');
+            background-size: cover;
+            background-position: center;
+            padding: 50px 0;
+        }
+        #hello {
+            font-family: "Dancing Script", serif;
+            font-weight: 700;
+            margin-top: 30px !important;
+            font-size: 23px;
+            color: #333; /* Ensure the "Hello" text is readable */
+        }
+        .email-body p {
+            color: #555; /* Set the color for the paragraph text */
+        }
+    </style>
+</head>
+<body>
+    <div class="email-background">
+        <div class="email-header">
+            <h1>Password Reset Request</h1>
+        </div>
+        <div class="email-container">
+            <div class="email-body">
+                <p id="hello">Hello,</p>
+                <p>We've received a request to reset the password for your <strong>Orbit</strong> account associated with <strong>%EMAIL%</strong>.</p>
+                <p>To reset your password, click the button below:</p>
+                <p id="space">
+                    <a href="%LINK%" class="cta-button" style="color: white; text-decoration: none;">Reset Your Password</a>
+                </p>
+                <p>If you didn’t request a password reset, please ignore this email. Your account remains secure.</p>
+            </div>
+            <div class="email-footer">
+                <p>Thanks,</p>
+                <p>The <strong>Orbit</strong> team</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

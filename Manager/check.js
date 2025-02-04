@@ -120,11 +120,18 @@ search.addEventListener('click', async () => {
           querySnapshot.forEach((doc) => {
               const data = doc.data();
               
-              // Build table rows
-              tableRows += `
-                <tr>
-                  <td>${data.Date || "N/A"}</td>
-                  <td>${data.EmployeeID || "N/A"}</td>
+              // Determine color for Status
+          let statusColor = "green"; // Default to green
+          if (data.Status === "Absent") {
+            statusColor = "red";
+          }
+        
+          // Build table rows with inline style for the status column
+          tableRows += `
+            <tr>
+              <td>${data.Date || "--"}</td>
+              <td>${data.EmployeeID || "--"}</td> 
+              <td style="color: ${statusColor};">${data.Status || "--"}</td>
                   <td>${data.Firstlogin || "N/A"}</td>
                   <td>${data.Lastlogin || "N/A"}</td>
                   <td>${data.Logindata || "N/A"}</td>
@@ -140,6 +147,7 @@ search.addEventListener('click', async () => {
                       <tr>
                           <th>Attended Date</th>
                           <th>Employee ID</th>
+                          <th>Status</th>
                           <th>First Login</th>
                           <th>Last Login</th>
                           <th>Logins</th>

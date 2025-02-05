@@ -3,60 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fingerprint Login with Firebase</title>
-    <script type="module">
-        // Import Firebase SDK
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-        import { getAuth, signInWithCredential } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
-            authDomain: "geo-orbit-ed7a7.firebaseapp.com",
-            databaseURL: "https://geo-orbit-ed7a7-default-rtdb.firebaseio.com",
-            projectId: "geo-orbit-ed7a7",
-            storageBucket: "geo-orbit-ed7a7.firebasestorage.app",
-            messagingSenderId: "807202826514",
-            appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
-            measurementId: "G-H15DN69132"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Function to login with fingerprint (WebAuthn)
+    <title>Fingerprint Login with WebAuthn</title>
+    <script>
         async function loginWithFingerprint() {
             if (navigator.credentials) {
                 try {
-                    // Mock challenge (this should be generated securely on your server)
-                    const challenge = new Uint8Array(32); // Random challenge
-                    window.crypto.getRandomValues(challenge); // Fill with random bytes
+                    // Step 1: Create a mock challenge (this would normally come from the server)
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge); // Randomly generate a challenge
 
+                    // Step 2: WebAuthn publicKey options
                     const publicKey = {
-                        challenge: challenge, // The challenge must be passed
-                        timeout: 60000,
-                        allowCredentials: [],
-                        userVerification: 'preferred'
+                        challenge: challenge, // This would be a secure challenge from your server
+                        timeout: 60000, // Timeout in milliseconds
+                        allowCredentials: [], // Credentials (e.g., user data stored in the backend)
+                        userVerification: "preferred" // Allow biometric verification
                     };
 
+                    // Step 3: Request fingerprint authentication via WebAuthn
                     const assertion = await navigator.credentials.get({
                         publicKey: publicKey
                     });
 
-                    // After successful fingerprint authentication, we use Firebase to sign in
-                    const credential = firebase.auth.FacebookAuthProvider.credential(assertion);
-                    await signInWithCredential(auth, credential);
-                    alert('Logged in successfully!');
+                    console.log('Assertion received:', assertion);
+
+                    // Step 4: Simulate sending the assertion to a server (mock)
+                    alert('Fingerprint login successful!');
+
                 } catch (error) {
                     console.error('Fingerprint login failed:', error);
+                    alert('Fingerprint login failed. Make sure your fingerprint sensor is working and WebAuthn is supported.');
                 }
             } else {
-                console.log('WebAuthn is not supported in this browser');
+                alert('WebAuthn is not supported on your browser or device.');
             }
         }
 
-        // Add event listener for button click
+        // Listen for the fingerprint login button click
         document.addEventListener('DOMContentLoaded', () => {
             const loginButton = document.getElementById('fingerprint-login');
             loginButton.addEventListener('click', loginWithFingerprint);
@@ -64,7 +47,8 @@
     </script>
 </head>
 <body>
-    <h1>Fingerprint Login</h1>
+    <h1>Fingerprint Login with WebAuthn</h1>
+    <p>Click the button below to log in using your fingerprint.</p>
     <button id="fingerprint-login">Login with Fingerprint</button>
 </body>
 </html>

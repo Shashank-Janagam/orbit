@@ -10,6 +10,7 @@
 </head>
 <body>
     <h2>Fingerprint Authentication</h2>
+    <button onclick="googleSignIn()">Sign in with Google</button>
     <button onclick="registerFingerprint()">Register Fingerprint</button>
     <button onclick="authenticateFingerprint()">Login with Fingerprint</button>
 
@@ -25,15 +26,34 @@
   appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
   measurementId: "G-H15DN69132"
 };
-
+        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Sign in with Google
+        async function googleSignIn() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                const result = await auth.signInWithPopup(provider);
+                console.log("User signed in:", result.user);
+                alert("Signed in as: " + result.user.email);
+            } catch (error) {
+                console.error("Google Sign-In failed:", error);
+            }
+        }
+
+        // Register Fingerprint
         async function registerFingerprint() {
             if (!window.PublicKeyCredential) {
                 alert("WebAuthn is not supported on this browser.");
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please sign in first.");
                 return;
             }
             
@@ -42,8 +62,8 @@
                 rp: { name: "Your Website" },
                 user: {
                     id: new Uint8Array(16),
-                    name: "user@example.com",
-                    displayName: "User",
+                    name: user.email,
+                    displayName: user.displayName,
                 },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }],
                 authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
@@ -56,29 +76,39 @@
                 console.log("Fingerprint Registered:", credential);
                 
                 // Store credential in Firestore
-                const user = auth.currentUser;
-                if (user) {
-                    await db.collection("fingerprintCredentials").doc(user.uid).set({
-                        credentialId: credential.id
-                    });
-                    alert("Fingerprint registered successfully!");
-                } else {
-                    alert("Please sign in first.");
-                }
+                await db.collection("fingerprintCredentials").doc(user.uid).set({
+                    credentialId: credential.id
+                });
+                alert("Fingerprint registered successfully!");
             } catch (error) {
                 console.error("Fingerprint registration failed:", error);
             }
         }
         
+        // Authenticate with Fingerprint
         async function authenticateFingerprint() {
-            const publicKey = {
-                challenge: new Uint8Array(32),
-                allowCredentials: [],
-                timeout: 60000,
-                userVerification: "required"
-            };
-            
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please sign in first.");
+                return;
+            }
+
             try {
+                // Retrieve stored credential ID from Firestore
+                const doc = await db.collection("fingerprintCredentials").doc(user.uid).get();
+                if (!doc.exists) {
+                    alert("No fingerprint registered for this user.");
+                    return;
+                }
+                const credentialId = doc.data().credentialId;
+
+                const publicKey = {
+                    challenge: new Uint8Array(32),
+                    allowCredentials: [{ id: Uint8Array.from(atob(credentialId), c => c.charCodeAt(0)), type: "public-key" }],
+                    timeout: 60000,
+                    userVerification: "required"
+                };
+                
                 const assertion = await navigator.credentials.get({ publicKey });
                 console.log("Fingerprint Authentication Successful:", assertion);
                 alert("Login successful!");

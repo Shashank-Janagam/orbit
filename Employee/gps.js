@@ -92,7 +92,7 @@ function getLocationAndCheckRadius() {
 
 // setInterval(() => {
   
-
+// document.getElementById('blocks').style.display='flex';
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       position => {

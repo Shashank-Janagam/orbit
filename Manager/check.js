@@ -132,9 +132,9 @@ search.addEventListener('click', async () => {
               <td>${data.Date || "--"}</td>
               <td>${data.EmployeeID || "--"}</td> 
               <td style="color: ${statusColor};">${data.Status || "--"}</td>
-                  <td>${data.Firstlogin || "N/A"}</td>
-                  <td>${data.Lastlogin || "N/A"}</td>
-                  <td>${data.Logindata || "N/A"}</td>
+                  <td>${data.Firstlogin || "--"}</td>
+                  <td>${data.Lastlogin || "--"}</td>
+                  <td>${data.Logindata || "--"}</td>
                 </tr>
               `;
           });
@@ -573,7 +573,7 @@ freeze.addEventListener("click", async () => {
     }
 
     // alert("Attendance has been frozen for today, and absent employees have been marked.");
-    document.getElementById('fel').textContent="Attendance has been frozen for today, and absent employees have been marked.";
+    document.getElementById('fel').innerHTML="<p>Attendance has been frozen for today, and absent employees have been marked.</p>";
   } catch (error) {
     console.error("Error freezing attendance and marking absent:", error); 
     alert("Error freezing attendance. Please try again.");

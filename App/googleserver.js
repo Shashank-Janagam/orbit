@@ -15,6 +15,57 @@ const firebaseConfig = {
   measurementId: "G-H15DN69132"
 };
 
+
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
+
+// Canvas Fingerprinting
+function generateCanvasFingerprint() {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.textBaseline = "top";
+  ctx.font = "14px 'Arial'";
+  ctx.fillText('Hello World!', 2, 2);
+  const data = canvas.toDataURL();
+  return hashString(data);
+}
+
+// WebGL Fingerprinting
+function getWebGLFingerprint() {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+  const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+  return hashString(renderer + vendor);
+}
+
+// Store the fixed font list at the time of registration
+const fixedFontList = [
+  "Arial", "Verdana", "Courier New", "Georgia", "Times New Roman", "Tahoma", "Trebuchet MS"
+];
+
+// Gathering all data for fingerprint
+function generateFingerprint() {
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform;
+  const screenRes = `${screen.width}x${screen.height}`;
+  const fonts = fixedFontList.join(','); // Use the fixed font list
+  const canvasFingerprint = generateCanvasFingerprint();
+  const webglFingerprint = getWebGLFingerprint();
+
+  const fingerprintData = `${userAgent}-${platform}-${screenRes}-${fonts}-${canvasFingerprint}-${webglFingerprint}`;
+  return hashString(fingerprintData);
+}
+
+// Display fingerprint
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -63,14 +114,47 @@ async function handleSignIn() {
       const userDoc = await getDoc(userRef);
 
       // Generate the current device ID
-      const currentDeviceID = generateDeviceID();
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
+        const finger=generateFingerprint();
+        console.log(finger);
+        console.log(userData.DeviceId);
+if(userData.DeviceId!=finger){
 
+   try {
+      await signOut(auth); // Sign out the user
+      console.log("User successfully logged out.");
+      
+      // Clear sessionStorage
+      sessionStorage.removeItem('userUID');
+      
+      // Redirect to the login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert("Logout failed. Please try again.");
+    }
+
+  
+    console.log("Not a registered device"      );
+
+      window.location.href="/invalidDevice.html";
+
+    }else{
+      console.log("Login event recorded in Firestore.");
+
+      // Save UID in sessionStorage
+      sessionStorage.setItem('userEmail', user.email);
+
+      sessionStorage.setItem('userUID', user.uid);
+      window.location.href="/Employee/home.html";
+    }
      
       } else {
-        // If the user is logging in for the first time, register their device
+        const fingerprint = generateFingerprint();
+
+        // If the us
+        // er is logging in for the first time, register their device
         const userDetails = {
           name: user.displayName,
           email: user.email,
@@ -78,7 +162,7 @@ async function handleSignIn() {
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Employee",
           Company: companyName,
-          deviceID: currentDeviceID,
+          DeviceId:fingerprint,
           Dob:"",
           mobileNumber:"", // Store the device ID
         };
@@ -86,24 +170,19 @@ async function handleSignIn() {
         console.log("User not found in Firestore, saving details...");
         await setDoc(userRef, userDetails);
         console.log("User details saved to Firestore!");
-      }
 
-      // Log successful login in Firestore
-      const loginsRef = collection(db, "logins");
-      await addDoc(loginsRef, {
-        name: user.displayName,
-        email: user.email,
-        timestamp: new Date(), // Store login timestamp
-      });
-
-      console.log("Login event recorded in Firestore.");
+        console.log("Login event recorded in Firestore.");
 
       // Save UID in sessionStorage
       sessionStorage.setItem('userEmail', user.email);
 
       sessionStorage.setItem('userUID', user.uid);
       window.location.href = userDoc.exists() ? "/Employee/home.html" : "/Employee/userDetails.html";
+      }
 
+    
+
+  
     }
     else if(!pmanagers.empty){
 
@@ -122,7 +201,7 @@ async function handleSignIn() {
       // const currentDeviceID = generateDeviceID();
 
       if (!userDoc.exists()) {
-        
+
  // If the user is logging in for the first time, register their device
         const userDetails = {
           name: user.displayName,

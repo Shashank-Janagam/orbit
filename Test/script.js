@@ -1,3 +1,4 @@
+// Initialize Firebase first
 const firebaseConfig = {
     apiKey: "AIzaSyCib5ywnEJvXXIePdWeKZtrKMIi2-Q_9sM",
     authDomain: "geo-orbit-ed7a7.firebaseapp.com",
@@ -7,8 +8,9 @@ const firebaseConfig = {
     messagingSenderId: "807202826514",
     appId: "1:807202826514:web:5630f581f6f9dff46aebcb",
     measurementId: "G-H15DN69132"
-  };
+};
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 

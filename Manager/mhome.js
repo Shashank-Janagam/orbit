@@ -36,9 +36,14 @@ if (!userUID) {
  console.log(company);
      const userRef = doc(db, `/company/${company}/managers`,userUID);
     const userDoc = await getDoc(userRef);
+      const cref=doc(db,`company/${company}`);
+    
 
   try {
-    
+    const cdoc=await getDoc(cref);
+    const cdata=cdoc.data();
+    document.getElementById("clogo").src=cdata.clogo;
+    document.getElementById('clogo').style.display='block';
     
     if (userDoc.exists()) {
       // User data exists, retrieve and display it

@@ -20,6 +20,25 @@ body, html {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 
     }
+    #clogo{
+      width: auto;
+      height: auto;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+
+    }
+
+    #companylogo {
+      width: 100%;
+      height: 150px;
+      /* background-image: url("/Images/micro.webp"); */
+      background-repeat: no-repeat;
+      display: flex; /* Enable flexbox */
+      align-items: center; /* Vertically center */
+      justify-content: center; /* Horizontally center */
+      background-position: center; /* Ensure the background image is centered */
+  }
+  
     #map2{
         width: 100%;
         /* padding-top: 10%; */
@@ -34,7 +53,9 @@ body, html {
         display: flex;
         justify-content: center;
         gap:42%;
-        height: 50px;
+        height: 60px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
     }
     .b{
         display: flex;
@@ -116,18 +137,41 @@ body, html {
             /* justify-content: center; */
         }
     #detect:hover,#history:hover{
-            transform: scale(1.01); /* Slight zoom effect */
-            background-color: #3bc190; /* Darker green */
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+      font-size: 1.01rem;
+      color:#555;
+      transform: scale(1.02); /* Slight zoom effect */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+      border: none; 
             }
-
-            #set{
+            #content{
+              padding-left: 1%;
               display: flex;
+              gap: 20px;
+            }
+#chat{
+  display: flex;
               flex-direction: column; /* Stack buttons vertically */
               align-items: center; /* Center horizontally */
               justify-content: center; /* Center vertically */
-              height: 100vh; /* Full viewport height */
+              height: 60vh; /* Full viewport height */
               gap: 20px;
+              background-color: white;
+              width: 40%;
+              border-radius: 8px;
+              /* margin-left: 2%; */
+
+}
+            #set{
+              /* padding-top: 20px; */
+              display: flex;
+              flex-direction: column; /* Stack buttons vertically */
+              align-items: center;
+              /* justify-content: center; Center vertically */
+              height: 60vh; /* Full viewport height */
+              gap: 20px;
+              background-color: white;
+              width: 15%;
+              border-radius: 8px;
 
             }
             #logo{
@@ -154,22 +198,22 @@ body, html {
     #detect,#history{
         /* margin-left: 41%; */
         /* margin-top :50%; */
-        background-color: #04AA6D;
+        background-color: antiquewhite;
         border-radius: 15px;
         /* width: 17%; */
         
-        color: white;
+        color: #333;
         
         
         border:none;
         
         /* left: 50%; */
         
-        font-weight: 700;
+        font-weight: bold;
         /* margin-top: 30px !important; */
-        font-size: 20px;
+        font-size: 1rem;
         text-align: center;
-        width: 18vmax;
+        width: 75%;
         /* max-width:17%; */
         height: 47.5px;
         /* padding-left: 90px; 
@@ -177,6 +221,7 @@ body, html {
         
         font-style: italic;
       
+        margin-top: 10px;
         
         
         
@@ -197,7 +242,7 @@ body, html {
         /* margin: 0px; */
         /* font-size: 1rem; */
         font-weight: bold;
-        color:#333;
+        color:white;
         text-align: center;
         font-size:20px;
         background-color: transparent;
@@ -249,7 +294,7 @@ body, html {
   .d1{
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color:transparent;
     border-radius: 8px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     /* display: block; */
@@ -296,3 +341,63 @@ margin-left:0;
     color: #333;
 
   }
+
+  
+#foot{
+  /* background-color: #333;
+   */
+  background-image: url("/Images/anst.png");
+  background-position: right;
+  background-repeat: no-repeat;
+  background-color:rgb(31, 30, 30);
+   width: 100%;
+  height: 475px;
+
+  /* margin-top: 0;
+   */
+   /* background-repeat: no-repeat; */
+}
+
+
+#copy{
+  color: #FFF4A3;
+font-weight: 700;
+font-size: 20px;
+text-align: center;
+padding-left: 90px;
+padding-right: 90px;
+margin-top: 0px;
+
+}
+.copy{
+  margin-top: 0px;
+  padding-top: 50px;
+}
+#info{
+  /* justify-content:center;
+   */
+   text-align: center;
+}
+#info h5{
+  font-family: 'Source Sans Pro', sans-serif;
+  color:#ddd;
+  line-height: 15px;
+}
+#tobe{
+  height: 200px;
+}
+#team{
+font-family: "Dancing Script", serif;
+  color:#FFF4A3;
+  line-height: 15px;
+  font-weight: bold;
+}
+#meet{
+  font-family: "Dancing Script", serif;
+
+}
+#info {
+  font-family: 'Source Sans Pro', sans-serif;
+  color:#ddd;
+  line-height: 15px;
+}

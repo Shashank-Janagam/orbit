@@ -133,7 +133,8 @@ font-style: italic;
 
 #home {
 /* align-content: center; */
-background-image: url("/Images/background_in_space.webp");
+background-image: url("/Images/background_in_space.webp"),url("/Images/anst.webp");
+background-color: #282A35;
 background-repeat: no-repeat; /* Uncommented for better control */
 background-size: cover; /* Improved image scaling */
 background-position: center center; /* Center the image */
@@ -662,4 +663,60 @@ margin-left: 42%;
 
     }
    
+}
+
+#foot{
+  /* background-color: #333;
+   */
+  background-image: url("/Images/anst.png");
+  background-position: right;
+  background-repeat: no-repeat;
+  background-color:rgb(31, 30, 30);
+   width: 100%;
+   height: 475px;
+
+  /* margin-top: 0;
+   */
+   /* background-repeat: no-repeat; */
+}
+
+
+#copy{
+  color: #FFF4A3;
+font-weight: 700;
+font-size: 20px;
+text-align: center;
+padding-left: 90px;
+padding-right: 90px;
+margin-top: 0px;
+
+}
+.copy{
+  margin-top: 0px;
+  padding-top: 50px;
+}
+#info{
+  /* justify-content:center;
+   */
+   text-align: center;
+}
+#info h5{
+  font-family: 'Source Sans Pro', sans-serif;
+  color:#ddd;
+  line-height: 15px;
+}
+#team{
+font-family: "Dancing Script", serif;
+  color:#FFF4A3;
+  line-height: 15px;
+  font-weight: bold;
+}
+#meet{
+  font-family: "Dancing Script", serif;
+
+}
+#info {
+  font-family: 'Source Sans Pro', sans-serif;
+  color:#ddd;
+  line-height: 15px;
 }

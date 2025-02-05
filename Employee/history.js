@@ -109,6 +109,7 @@ if (!userEmail) {
 
       // Insert content into profile class
       document.getElementById('profile').innerHTML = profileContent;
+      document.getElementById('contains').style.display='flex';
     } else {
       console.log("No attendance records found for this EmployeeID.");
       document.getElementById('profile').innerHTML = "<p>No records found</p>";

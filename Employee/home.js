@@ -26,6 +26,8 @@ const db = getFirestore(app); // Initialize Firestore
 const userUID = sessionStorage.getItem('userUID');
 const company=sessionStorage.getItem('company');
 
+
+
 if (!userUID) {
   console.log("No user is authenticated!");
   alert("Please sign in to proceed.");
@@ -34,10 +36,15 @@ if (!userUID) {
   console.log("User is authenticated with UID:", userUID);
   // Fetch user data from Firestore using userUID
   const userRef = doc(db, `company/${company}/users`, userUID);
+  const cref=doc(db,`company/${company}`);
 
   try {
     const userDoc = await getDoc(userRef);
-    
+    const cdoc=await getDoc(cref);
+    const cdata=cdoc.data();
+    document.getElementById("clogo").src=cdata.clogo;
+    document.getElementById('clogo').style.display='block';
+
     if (userDoc.exists()) {
       // User data exists, retrieve and display it
       const userData = userDoc.data();
@@ -45,7 +52,6 @@ if (!userUID) {
 
     
       document.getElementById("logo").src = userData.photoURL || "default-profile-pic.png"; // Fallback to default image
-      
       // console.log(userData.age);
     } else {
       console.log("No user data found in Firestore.");

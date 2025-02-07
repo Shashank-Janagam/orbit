@@ -3,12 +3,17 @@ body, html {
     background-image: url(/Images/background_in_space.webp);
     padding: 0;
     margin: 0;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
     /* overflow: hidden; */
     }
      /* For modern browsers */
      body::-webkit-scrollbar {
       width: 0px; /* Make the scrollbar narrower */
+
+       
     }
     #map {
         width: 100%;
@@ -65,18 +70,15 @@ body, html {
 
 
 
-    .content,.b {
-      /* text-align: center; */
-      transition: opacity 0.5s ease; /* Smooth fade effect */
-    }
+ 
     
     /* Fade-out effect */
-    .content.fade-out,.b.fade-out {
+    .contains.fade-out,.b.fade-out {
       opacity: 0;
     }
     
     /* Fade-in effect */
-    .content.fade-in{
+    .contains.fade-in{
       opacity: 0;
       animation: fadeIn 0.5s forwards;
     }
@@ -125,7 +127,7 @@ body, html {
             width: 100%;
           }
     }
-    #detect:focus,#history:focus{
+    #un:focus,#hist4:focus{
         outline: none; /* Remove outline */
         border: 2px solid #04AA6D; /* Highlight border */
         transform: scale(1.05); /* Slight zoom effect */
@@ -136,44 +138,7 @@ body, html {
             display: flex;
             /* justify-content: center; */
         }
-    #detect:hover,#history:hover{
-      font-size: 1.01rem;
-      color:#555;
-      transform: scale(1.02); /* Slight zoom effect */
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
-      border: none; 
-            }
-            #content{
-              padding-left: 1%;
-              display: flex;
-              gap: 20px;
-            }
-#chat{
-  display: flex;
-              flex-direction: column; /* Stack buttons vertically */
-              align-items: center; /* Center horizontally */
-              justify-content: center; /* Center vertically */
-              height: 60vh; /* Full viewport height */
-              gap: 20px;
-              background-color: white;
-              width: 40%;
-              border-radius: 8px;
-              /* margin-left: 2%; */
-
-}
-            #set{
-              /* padding-top: 20px; */
-              display: flex;
-              flex-direction: column; /* Stack buttons vertically */
-              align-items: center;
-              /* justify-content: center; Center vertically */
-              height: 60vh; /* Full viewport height */
-              gap: 20px;
-              background-color: white;
-              width: 15%;
-              border-radius: 8px;
-
-            }
+ 
             #logo{
                 width: 100%;
                 border-radius: 50%;
@@ -195,7 +160,7 @@ body, html {
     
 
 }
-    #detect,#history{
+    #un,#hist4{
         /* margin-left: 41%; */
         /* margin-top :50%; */
         background-color: antiquewhite;
@@ -400,4 +365,66 @@ font-family: "Dancing Script", serif;
   font-family: 'Source Sans Pro', sans-serif;
   color:#ddd;
   line-height: 15px;
+}
+
+
+
+#contains {
+  width: 100%;
+  min-height: 100vh; /* Ensure full page height */
+  align-content: center;
+  padding-left: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+}
+
+
+.emplo{
+  background-color: white;
+  width: 25%;
+  height: 90%;
+  border-radius: 15px;
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3); /* X-offset, Y-offset, blur, color */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+ 
+  text-align: center;
+  margin-left: 10px;
+  cursor: pointer;
+
+
+}
+
+.emplo:hover{
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* X-offset, Y-offset, blur, color */
+
+  
+}
+#mp{
+  padding-top: 100%;
+  font-weight: bold;
+  font-family: "Monomaniac One", serif;
+  line-height: 15px;
+  font-size: 1.5rem;
+
+}
+
+#detect{
+  background-image: url("/Images/fence.avif");
+  background-repeat: no-repeat;
+  background-size: contain;
+
+}
+#projects{
+  background-image: url("/Images/projects.avif");
+  background-repeat: no-repeat;
+  background-size: contain;
+
+}
+#history{
+  background-image: url("/Images/attend.avif");
+  background-repeat: no-repeat;
+  background-size: contain;
+
 }

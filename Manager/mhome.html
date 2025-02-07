@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orbit - Home Page</title>
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> 
+  <title>Orbit - Home Page</title><link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="style.css"> -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Acme&family=Dancing+Script:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&family=Goldman:wght@400;700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Monomaniac+One&family=Pacifico&family=Permanent+Marker&display=swap" rel="stylesheet">
+ 
   <link rel="icon" type="image/png" href="/Images/icon.png">
 
   
@@ -82,19 +81,37 @@
     </div>
  </div>
  <div id="companylogo" >
+  <div id="con">
   <img src="" alt="Company logo" id="clogo" style="display: none;">
+  </div>
 
  </div>
- <div id="content" class="content">
-  <div id="chat"> Yet to Update </div>
-<div id="chat"> Yet to Update </div>
 
- <div id="set">
-    <button id="history">Attendance History</button>
-    <button id="setloc">Set Office Location</button>
-    <button id="employees">Employees</button>
- </div>
- </div>
+ <div id="contains" class="contains">
+
+  <div id="employees" class="emplo">
+    <h5 id=  "mp">
+      Employees
+    </h5>
+    
+  </div>
+  <div id="setloc" class="emplo">
+    <h5 id=  "mp">
+      Verify Presence
+    </h5>
+    
+  </div>
+  <div id="history" class="emplo">
+    <h5 id=  "mp">
+      Attendance Log
+    </h5>
+    
+  </div>
+
+
+
+ </div> 
+
  <div id="tobe"></div>
  <footer id="foot">
         
@@ -118,15 +135,11 @@
 </footer>
  <script>
   document.getElementById('plogo').addEventListener('click', () => {
-      const content = document.getElementById('content');
-      content.classList.add('fade-out');
       setTimeout(() => {
         window.location.href = 'userDetails.html';
       }, 500); // Duration of the fade-out
     });
     document.getElementById('employees').addEventListener('click', () => {
-      const content = document.getElementById('content');
-      content.classList.add('fade-out');
       setTimeout(() => {
         window.location.href = 'empDetails.html';
       }, 100); // Duration of the fade-out
@@ -134,8 +147,6 @@
 
 
     document.getElementById('history').addEventListener('click', () => {
-      const content = document.getElementById('content');
-      content.classList.add('fade-out');
       setTimeout(() => {
         // window.location.href = 'location.html';
         window.location.href = 'check.html';
@@ -143,8 +154,6 @@
       }, 100); // Duration of the fade-out
     });
     document.getElementById('setloc').addEventListener('click', () => {
-      const content = document.getElementById('content');
-      content.classList.add('fade-out');
       setTimeout(() => {
         // window.location.href = 'location.html';
         window.location.href = 'setlocation.html';

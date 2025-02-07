@@ -160,11 +160,11 @@ if(userData.DeviceId!=finger){
           email: user.email,
           photoURL: user.photoURL,
           EmployeeID: user.email.replace("@gmail.com", ""),
-          Role: "Employee",
+          Role: cmpdata.Role,
           Company: companyName,
           DeviceId:fingerprint,
-          Dob:"",
-          mobileNumber:"", // Store the device ID
+          Dob:cmpdata.Dob,
+          mobileNumber:cmpdata.mobile, // Store the device ID
         };
 
         console.log("User not found in Firestore, saving details...");

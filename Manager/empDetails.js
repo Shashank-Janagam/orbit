@@ -57,7 +57,7 @@ onAuthStateChanged(auth, async (user) => {
       } else {
         // alert("Access Denied. Only managers can view this page.");
         // await signOut(auth);
-        window.location.href = "/Employee/home.html"; // Redirect to login page
+        window.location.href = "/index.html"; // Redirect to login page
       }
     } else {
       alert("User not found in the database.");
@@ -161,9 +161,9 @@ async function displayAllEmployees() {
     // Update the UI with employee data
     document.getElementById("userName").innerText = data.name || "Not provided";
     document.getElementById("userEmail").innerText = data.email || "Not provided";
-    document.getElementById("dob").innerText = "Date of birth: " + (data.Dob || "Not provided");
+    document.getElementById("Dob").innerText = "Date of birth: " + (data.Dob || "Not provided");
     document.getElementById("userMobile").innerText = "Mobile: " + (data.mobileNumber || "Not provided");
-    document.getElementById('role').innerText = data.Role || "Not provided";
+    document.getElementById('Role').innerText = data.Role || "Not provided";
     document.getElementById('company').innerText = data.Company || "Not provided";
   }
   

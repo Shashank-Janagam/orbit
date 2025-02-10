@@ -24,47 +24,48 @@ const db = getFirestore(app);
 
 // Check if the user is authenticated
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    alert("Access Denied. Please log in.");
-    window.location.href = "/index.html"; // Redirect to login page
-    return;
-  }
-
-  const userUID = user.uid;
-  const company = sessionStorage.getItem('company');
-
-  const userRef = doc(db, `company/${company}/managers`, userUID); // Fetch user data from Firestore
-    const userDoc = await getDoc(userRef);
-    const userData = userDoc.data();
-
-  if (company!=userData.Company) {
-    alert("Session expired. Please log in again.");
-    window.location.href = "/index.html";
-    return;
-  }
+    if (!user) {
+      alert("Access Denied. Please log in.");
+      window.location.href = "/index.html"; // Redirect to login page
+      return;
+    }
+  
+    const userUID = user.uid;
+    const company = sessionStorage.getItem('company');
+  
+    const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+  
+    if (company!=userData.Company) {
+      alert("Session expired. Please log in again.");
+      window.location.href = "/index.html";
+      return;
+    }
+  
 
   try {
-    // Check if the user role exists in the users collection
-    const userRef = doc(db, `company/${company}/managers`, userUID); // Fetch user data from Firestore
-    const userDoc = await getDoc(userRef);
-
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      const userRole = userData.Role; // Assuming the role is stored under 'role' in the user document
-
-      if (userRole === "Manager") {
-        console.log("User is a manager. Access granted.");
-        sessionStorage.setItem('userRole', 'manager');
+   // Check if the user role exists in the users collection
+      const userRef = doc(db, `company/${company}/users`, userUID); // Fetch user data from Firestore
+      const userDoc = await getDoc(userRef);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const userRole = userData.role; // Assuming the role is stored under 'role' in the user document
+  alert(userRole);
+        if (userRole === "manager") {
+          console.log("User is a manager. Access granted.");
+          sessionStorage.setItem('userRole', 'manager');
+        } else {
+          // alert("Access Denied. Only managers can view this page.");
+          // await signOut(auth);
+          window.location.href = "/index.html"; // Redirect to login page
+        }
       } else {
-        alert("Access Denied. Only managers can view this page.");
+        alert("User not found in the database.");
         await signOut(auth);
-        window.location.href = "/index.html"; // Redirect to login page
+        window.location.href = "/index.html";
       }
-    } else {
-      alert("User not found in the database.");
-      await signOut(auth);
-      window.location.href = "/index.html";
-    }
   } catch (error) {
     console.error("Error fetching user role from Firestore:", error);
     alert("Error verifying access. Please try again.");
@@ -183,6 +184,7 @@ search.addEventListener('click', async () => {
         const doc = querySnapshot.docs[0].data(); // Assume the first result is the correct one
         // Display the selected employee's details in the profile form
         displayEmployeeProfile(doc);
+        document.getElementById('freeze').style.display="none";
       } else {
         alert("Employee not found.");
       }
@@ -278,7 +280,7 @@ function selectDate(dateCell) {
     if (selectedDate) {
         selectedDate.classList.remove("calendar__date--selected");
     }
-
+    document.getElementById('freeze').style.display="none";
     // Mark the clicked date as selected
     dateCell.classList.add("calendar__date--selected");
 
@@ -428,7 +430,7 @@ let time=null;
         console.log("No employees found.");
         const pro=document.getElementById('profile');
         pro.style.display='block';
-        document.getElementById('profile').innerHTML = "No Employees Attended";
+        document.getElementById('fel').innerHTML = "No Employees Attended";
         pro.style.width="700px";
         
       }
@@ -495,7 +497,8 @@ let time=null;
           pro.style.width="700px";
           pro.innerHTML = profileContent;
       } else {
-          document.getElementById('profile').innerHTML = `<p>No attendance records found for ${selectedDate}.</p>`;
+                    document.getElementById('fel').innerHTML = `<p>No attendance records found for ${selectedDate}.</p>`;
+
       }
   } catch (error) {
       console.error("Error fetching attendance records from Firestore:", error);
@@ -565,15 +568,21 @@ freeze.addEventListener("click", async () => {
             Role:employee.Role,
           });
           console.log("Attendance successfully marked as absent for:", employeeID);
+              document.getElementById('fel').innerHTML="<p>Attendance has been frozen for today, and absent employees have been marked.</p>";
+              setTimeout(function () { 
+                location.reload();
+              }, 3000)
         } catch (error) {
           console.error("Error freezing attendance and marking absent: ", error);
           alert(`Error freezing attendance for ${employeeID}: ${error.message}`);
         }
+      }else{
+        document.getElementById('fel').innerHTML="<p>All Employees Attendance Completed</p>";
+
       }
     }
-
+  
     // alert("Attendance has been frozen for today, and absent employees have been marked.");
-    document.getElementById('fel').innerHTML="<p>Attendance has been frozen for today, and absent employees have been marked.</p>";
   } catch (error) {
     console.error("Error freezing attendance and marking absent:", error); 
     alert("Error freezing attendance. Please try again.");

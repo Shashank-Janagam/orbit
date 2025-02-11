@@ -26,6 +26,7 @@ const userUID = sessionStorage.getItem('userUID');
 
 if (!company || !userUID) {
     alert("User not authenticated!");
+    window.location.href="/index.html";
 } else {
     const userRef = doc(db, `company/${company}/users`, userUID);
     const userDoc = await getDoc(userRef);
@@ -78,7 +79,7 @@ async function displayAllEmployees() {
                         </div>
                         <div id="det">
                             <div id="name">${employeeName}</div>
-                            <div id="lastmes">Hello</div>
+                            <div id="lastmes"></div>
                         </div>
                     </div>
                 `;
@@ -99,6 +100,8 @@ displayAllEmployees();
 async function chattingWith(employeeData) {
     document.getElementById('profile').src = employeeData.photoURL || 'default.png';
     document.querySelector('.name').innerHTML = `${employeeData.name}`;
+    document.getElementById('role').innerHTML = `${employeeData.Role}`;
+
 
     // 🔹 Create Chat Room ID
     const sortedIDs = [userData.EmployeeID, employeeData.EmployeeID].sort();
@@ -107,7 +110,7 @@ async function chattingWith(employeeData) {
     // 🔹 Firestore Reference (Storing Messages by Date)
     const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
 
-    displayMessages(chatRoomID);
+    displayMessages(chatRoomID,employeeData);
 
     document.getElementById('send').addEventListener('click', async () => {
         const textInput = document.getElementById('textmessage');
@@ -136,8 +139,11 @@ async function chattingWith(employeeData) {
 }
 
 // 🔹 Display Messages from All Dates// 🔹 Display Messages from All Dates
-async function displayMessages(chatRoomID) {const chatContainer = document.getElementById("chat1");
+async function displayMessages(chatRoomID,employeeData) {
+    const chatContainer = document.getElementById("chat1");
   chatContainer.innerHTML = ""; // Clear previous messages
+  document.getElementById('chat').style.display="flex";
+
 
   const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
 
@@ -149,22 +155,53 @@ async function displayMessages(chatRoomID) {const chatContainer = document.getEl
           const messageData = doc.data();
 
           const messageDiv = document.createElement("div");
-
+        let dname=null;
           // 🔹 If the logged-in user is the sender, align RIGHT (sent)
           if (messageData.senderID === userData.EmployeeID) {
-              messageDiv.classList.add("message", "sent");
+              dname=userData.name;
+
+              messageDiv.innerHTML=`
+
+              <div class="msg right-msg">
+      <div class="msg-img" style="background-image: url(${userData.photoURL})"></div>
+
+      <div class="msg-bubble">
+        <div class="msg-info">
+          <div class="msg-info-name">${dname}</div>
+          <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+        </div>
+
+        <div class="msg-text">
+          ${messageData.message}
+        </div>
+            </div>
+    </div>
+    `;
           }
           // 🔹 If the logged-in user is the receiver, align LEFT (received)
           else {
-              messageDiv.classList.add("message", "received");
+              dname=employeeData.name;
+
+
+              messageDiv.innerHTML=`
+                    <div class="msg left-msg">
+      <div class="msg-img" style="background-image: url(${employeeData.photoURL})"></div>
+
+           <div class="msg-bubble">
+        <div class="msg-info">
+          <div class="msg-info-name">${dname}</div>
+          <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+        </div>
+
+        <div class="msg-text">
+          ${messageData.message}
+        </div>
+            </div>
+    </div>
+              `;
           }
 
-          messageDiv.innerHTML = `
-              <div class="message-bubble">
-                  <p>${messageData.message}</p>
-                  <span class="timestamp">${formatTimestamp(messageData.timestamp)}</span>
-              </div>
-          `;
+      
 
           chatContainer.appendChild(messageDiv);
       });

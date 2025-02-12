@@ -66,7 +66,9 @@ async function displayAllEmployees() {
             chatscon.innerHTML = ""; 
 
             querySnapshot.forEach(doc => {
+                
                 const employeeData = doc.data();
+                if(employeeData.EmployeeID!=userData.EmployeeID){
                 const employeeName = employeeData.name || "Not provided";
                 const photo = employeeData.photoURL || 'default.png';
 
@@ -86,6 +88,7 @@ async function displayAllEmployees() {
 
                 chatitem.onclick = () => chattingWith(employeeData);
                 chatscon.appendChild(chatitem);
+                }
             });
         } else {
             console.log("No employees found.");
@@ -95,125 +98,143 @@ async function displayAllEmployees() {
     }
 }
 displayAllEmployees();
+let isSendButtonListenerAttached = false;
 
-// 🔹 Open Chat with Employee
 async function chattingWith(employeeData) {
     document.getElementById('profile').src = employeeData.photoURL || 'default.png';
     document.querySelector('.name').innerHTML = `${employeeData.name}`;
     document.getElementById('role').innerHTML = `${employeeData.Role}`;
 
-
     // 🔹 Create Chat Room ID
     const sortedIDs = [userData.EmployeeID, employeeData.EmployeeID].sort();
     const chatRoomID = `${sortedIDs[0]}_${sortedIDs[1]}`;
 
-    // 🔹 Firestore Reference (Storing Messages by Date)
+    // 🔹 Firestore Reference
     const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
 
-    displayMessages(chatRoomID,employeeData);
+    // Display Messages
+    displayMessages(chatRoomID, employeeData);
 
-    document.getElementById('send').addEventListener('click', async () => {
-        const textInput = document.getElementById('textmessage');
-        const textMessage = textInput.value.trim();
+    // Prevent duplicate event listeners
+    if (!isSendButtonListenerAttached) {
+        document.getElementById('send').addEventListener('click', () => sendMessage(messagesRef, employeeData));
+        document.getElementById('textmessage').addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault(); 
+                sendMessage(messagesRef, employeeData);
+            }
+        });
 
-        if (!textMessage) {
-            alert("No message entered!");
-            return;
-        }
+        isSendButtonListenerAttached = true; // Mark as attached
+    }
+}
 
-        try {
+// 🔹 Send Message Function
+async function sendMessage(messagesRef, employeeData) {
+    const textInput = document.getElementById('textmessage');
+    const textMessage = textInput.value.trim();
 
-            await addDoc(messagesRef, {
-                senderID: userData.EmployeeID,
-                receiverID: employeeData.EmployeeID,
-                message: textMessage,
-                Date:formattedDate,
-                timestamp: serverTimestamp()
-            });
+    if (!textMessage) {
+        alert("No message entered!");
+        return;
+    }
 
-            textInput.value = ""; // Clear input after sending
-        } catch (error) {
-            console.error("Error sending message:", error);
-        }
+    try {
+        await addDoc(messagesRef, {
+            senderID: userData.EmployeeID,
+            receiverID: employeeData.EmployeeID,
+            message: textMessage,
+            Date: formattedDate,
+            timestamp: serverTimestamp()
+        });
+
+        textInput.value = ""; // Clear input after sending
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+}
+async function displayMessages(chatRoomID, employeeData) {
+    const chatContainer = document.getElementById("chat1");
+    chatContainer.innerHTML = ""; // Clear previous messages
+    document.getElementById('chat').style.display = "flex";
+
+    const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
+    let lastSenderID = null;
+    let lastMessageDate = null;
+
+    onSnapshot(query(messagesRef, orderBy("timestamp", "asc")), (snapshot) => {
+        chatContainer.innerHTML = ""; // Clear chat before reloading messages
+
+        snapshot.forEach((doc) => {
+            const messageData = doc.data();
+            const messageDiv = document.createElement("div");
+
+            const messageDate = messageData.Date; // Extracted from Firestore
+
+            // 🔹 Insert Date Divider If Date Changes
+            if (messageDate !== lastMessageDate) {
+                const dateSeparator = document.createElement("div");
+                dateSeparator.classList.add("date-separator");
+                dateSeparator.innerText = messageDate;
+                chatContainer.appendChild(dateSeparator);
+                lastMessageDate = messageDate;
+            }
+
+            let isFirstMessage = lastSenderID !== messageData.senderID;
+
+            if (messageData.senderID === userData.EmployeeID) {
+                messageDiv.classList.add("msg", "right-msg");
+
+                messageDiv.innerHTML = `
+                    <div class="msg-img" style="background-image: url(${userData.photoURL}); visibility: ${isFirstMessage ? 'visible' : 'hidden'};"></div>
+                    <div class="msg-bubble ${isFirstMessage ? "" : "no-tail"}" style="position: relative;">
+                        <div class="msg-text">${messageData.message}</div>
+                        <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+                        <div class="msg-tail" style="display: ${isFirstMessage ? 'block' : 'none'};"></div>
+                    </div>
+                `;
+            } else {
+                messageDiv.classList.add("msg", "left-msg");
+
+                messageDiv.innerHTML = `
+                    <div class="msg-img" style="background-image: url(${employeeData.photoURL}); visibility: ${isFirstMessage ? 'visible' : 'hidden'};"></div>
+                    <div class="msg-bubble ${isFirstMessage ? "" : "no-tail"}" style="position: relative;">
+                        <div class="msg-text">${messageData.message}</div>
+                        <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+                        <div class="msg-tail" style="display: ${isFirstMessage ? 'block' : 'none'};"></div>
+                    </div>
+                `;
+            }
+
+            chatContainer.appendChild(messageDiv);
+            lastSenderID = messageData.senderID; // Update last sender ID
+        });
+
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to latest message
     });
 }
 
-// 🔹 Display Messages from All Dates// 🔹 Display Messages from All Dates
-async function displayMessages(chatRoomID,employeeData) {
-    const chatContainer = document.getElementById("chat1");
-  chatContainer.innerHTML = ""; // Clear previous messages
-  document.getElementById('chat').style.display="flex";
 
-
-  const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
-
-  // 🔹 Listen for real-time message updates
-  onSnapshot(query(messagesRef, orderBy("timestamp", "asc")), (snapshot) => {
-      chatContainer.innerHTML = ""; // Clear chat before reloading messages
-
-      snapshot.forEach(doc => {
-          const messageData = doc.data();
-
-          const messageDiv = document.createElement("div");
-        let dname=null;
-          // 🔹 If the logged-in user is the sender, align RIGHT (sent)
-          if (messageData.senderID === userData.EmployeeID) {
-              dname=userData.name;
-
-              messageDiv.innerHTML=`
-
-              <div class="msg right-msg">
-      <div class="msg-img" style="background-image: url(${userData.photoURL})"></div>
-
-      <div class="msg-bubble">
-        <div class="msg-info">
-          <div class="msg-info-name">${dname}</div>
-          <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
-        </div>
-
-        <div class="msg-text">
-          ${messageData.message}
-        </div>
-            </div>
-    </div>
-    `;
-          }
-          // 🔹 If the logged-in user is the receiver, align LEFT (received)
-          else {
-              dname=employeeData.name;
-
-
-              messageDiv.innerHTML=`
-                    <div class="msg left-msg">
-      <div class="msg-img" style="background-image: url(${employeeData.photoURL})"></div>
-
-           <div class="msg-bubble">
-        <div class="msg-info">
-          <div class="msg-info-name">${dname}</div>
-          <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
-        </div>
-
-        <div class="msg-text">
-          ${messageData.message}
-        </div>
-            </div>
-    </div>
-              `;
-          }
-
-      
-
-          chatContainer.appendChild(messageDiv);
-      });
-
-      // 🔹 Auto-scroll to bottom on new messages
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-  });
-}
-
-// 🔹 Format Firestore Timestamp
 function formatTimestamp(timestamp) {
     if (!timestamp) return "Just now";
+    
     const date = timestamp.toDate();
+    const messageTime = date.getTime();
+    const currentTime = Date.now();
+    
+    // If the message was sent in the last 5 seconds, show "Just now"
+    if (currentTime - messageTime < 5000) {
+        setTimeout(() => {
+            const elements = document.querySelectorAll(".msg-info-time");
+            elements.forEach(el => {
+                if (el.innerText === "Just now") {
+                    el.innerText = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+                }
+            });
+        }, 5000);
+
+        return "Just now";
+    }
+
     return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
 }

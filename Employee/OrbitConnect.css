@@ -204,9 +204,77 @@ html {
   font-weight: bold;
   font-family: sans-serif;
 }
+.delete-icon {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right:20px;
+  align-self: baseline;
 
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 18px; /* Adjust as needed */
+  height: 18px;
+}
+
+.confirm-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: none;
+  z-index: 1000;
+}
+
+.confirm-popup p {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.confirm-popup button {
+  padding: 8px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#confirm-clear-chat {
+  background-color: red;
+  color: white;
+}
+
+#cancel-clear-chat {
+  background-color: gray;
+  color: white;
+}
+
+#clearChat{
+  width: 30px;
+  height: 30px;
+  margin-left: 70%;
+  cursor: pointer;
+  transition: opacity 0.5s ease; /* Smooth fade effect */
+
+
+}
+#clearChat:hover{
+  transform: scale(1.05);
+}
+#check{
+  width: 16px;
+  height: 16px;
+  /* position: absolute; */
+}
 .left-msg{
   font-size: large;
+  font-family: system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+
 
 }
 .left-msg .msg-bubble {
@@ -308,7 +376,7 @@ html {
 
 
 .received {
-  justify-content: flex-start; /* Received messages (Align Left) */
+  justify-content: flex-start; /* Received.left-ms messages (Align Left) */
 }
 .chat .messages .time {
   font-size: 0.8rem;

@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDoc, query, orderBy, getDocs, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { getFirestore, collection,updateDoc,writeBatch,setDoc, doc, getDoc, query, orderBy, getDocs, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 import { onSnapshot } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 // 🚀 Firebase Configuration
@@ -34,26 +34,9 @@ if (!company || !userUID) {
 }
 
 // 🔹 Get Online Time (IST)
-let formattedDate = null;
-
-async function fetchCurrentISTTime() {
-    try {
-        const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
-        const data = await response.json();
-
-        // Convert "YYYY-MM-DD" to "DD-MM-YYYY"
-        const [month, day, year] = data.date.split("/");
-        formattedDate = `${day}-${month}-${year}`;
-
-        console.log("IST Time:", formattedDate);
-    } catch (error) {
-        console.error("Error fetching time:", error);
-    }
-}
 
 // Fetch time before using it
-await fetchCurrentISTTime();
-
+timestamp: serverTimestamp() // Store Firebase server timestamp
 const chatscon = document.querySelector('.chats');
 
 // 🔹 Display All Employees
@@ -109,12 +92,15 @@ async function chattingWith(employeeData) {
     const sortedIDs = [userData.EmployeeID, employeeData.EmployeeID].sort();
     const chatRoomID = `${sortedIDs[0]}_${sortedIDs[1]}`;
 
+    
     // 🔹 Firestore Reference
     const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
-
+    await markMessagesAsRead(chatRoomID);
     // Display Messages
     displayMessages(chatRoomID, employeeData);
-
+document.getElementById("clearChat").addEventListener("click", () => {
+        clearChatForUser(chatRoomID); // Call function with the active chat room ID
+    });
     // Prevent duplicate event listeners
     if (!isSendButtonListenerAttached) {
         document.getElementById('send').addEventListener('click', () => sendMessage(messagesRef, employeeData));
@@ -128,8 +114,6 @@ async function chattingWith(employeeData) {
         isSendButtonListenerAttached = true; // Mark as attached
     }
 }
-
-// 🔹 Send Message Function
 async function sendMessage(messagesRef, employeeData) {
     const textInput = document.getElementById('textmessage');
     const textMessage = textInput.value.trim();
@@ -140,38 +124,70 @@ async function sendMessage(messagesRef, employeeData) {
     }
 
     try {
+        // 🔹 Fetch IST Date & Time
+        const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
+        const data = await response.json();
+
+        // Extract Date & Time
+        const [month, day, year] = data.date.split("/");
+        const formattedDate = `${day}-${month}-${year}`;
+        const formattedTime = data.time.slice(0, 5); // Extract "HH:MM"
+
+        // 🔹 Store in Firestore
         await addDoc(messagesRef, {
             senderID: userData.EmployeeID,
             receiverID: employeeData.EmployeeID,
             message: textMessage,
-            Date: formattedDate,
-            timestamp: serverTimestamp()
+            Date: formattedDate,  // Store IST Date
+            Time: formattedTime,  // Store IST Time
+            timestamp: serverTimestamp(),
+            read: false
         });
 
         textInput.value = ""; // Clear input after sending
     } catch (error) {
-        console.error("Error sending message:", error);
+        console.error("Error fetching IST time:", error);
     }
 }
+
+let unsubscribeMessages = null; // Store the unsubscribe function
+let unsubsnap=null;
 async function displayMessages(chatRoomID, employeeData) {
     const chatContainer = document.getElementById("chat1");
     chatContainer.innerHTML = ""; // Clear previous messages
     document.getElementById('chat').style.display = "flex";
+    const chatRoomRef = doc(db, `company/${company}/OrbitConnect`, chatRoomID);
+    const chatRoomSnapshot = await getDoc(chatRoomRef);
+
+    if (!chatRoomSnapshot.exists()) {
+        // If the chat room does not exist, create it
+        await setDoc(chatRoomRef, {
+            createdAt: serverTimestamp(),
+            members: [userData.EmployeeID, employeeData.EmployeeID]
+        });
+    }
 
     const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
     let lastSenderID = null;
     let lastMessageDate = null;
+    let isInitialLoad = true;
 
-    onSnapshot(query(messagesRef, orderBy("timestamp", "asc")), (snapshot) => {
+    // 🔹 Unsubscribe from any previous listener before attaching a new one
+    if (unsubscribeMessages) {
+        unsubscribeMessages(); // Stop listening to the old chat room
+    }
+
+    // Attach a new listener to the correct chat room
+    unsubscribeMessages = onSnapshot(query(messagesRef, orderBy("timestamp", "asc")), (snapshot) => {
         chatContainer.innerHTML = ""; // Clear chat before reloading messages
 
         snapshot.forEach((doc) => {
             const messageData = doc.data();
             const messageDiv = document.createElement("div");
-
-            const messageDate = messageData.Date; // Extracted from Firestore
-
-            // 🔹 Insert Date Divider If Date Changes
+            if (messageData.hiddenFor && messageData.hiddenFor.includes(userData.EmployeeID)) {
+                return; // Skip this message
+            }
+            const messageDate = messageData.Date;
             if (messageDate !== lastMessageDate) {
                 const dateSeparator = document.createElement("div");
                 dateSeparator.classList.add("date-separator");
@@ -181,60 +197,103 @@ async function displayMessages(chatRoomID, employeeData) {
             }
 
             let isFirstMessage = lastSenderID !== messageData.senderID;
+            let readStatusIcon = messageData.read
+            ? '<img id="check" src="/Images/check.png" class="tick-img">'  // ✅✅ Blue Double Check
+            : '<img id="check" src="/Images/check1.png" class="tick-img">';        // Single Gray Tick
+
 
             if (messageData.senderID === userData.EmployeeID) {
                 messageDiv.classList.add("msg", "right-msg");
-
                 messageDiv.innerHTML = `
+
                     <div class="msg-img" style="background-image: url(${userData.photoURL}); visibility: ${isFirstMessage ? 'visible' : 'hidden'};"></div>
                     <div class="msg-bubble ${isFirstMessage ? "" : "no-tail"}" style="position: relative;">
-                        <div class="msg-text">${messageData.message}</div>
-                        <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+                                <div class="msg-text">${messageData.message}</div>
+                        <div class="msg-info-time">${messageData.Time}<span class="read-status">${readStatusIcon}</span>
+</div>
                         <div class="msg-tail" style="display: ${isFirstMessage ? 'block' : 'none'};"></div>
                     </div>
                 `;
             } else {
                 messageDiv.classList.add("msg", "left-msg");
-
                 messageDiv.innerHTML = `
                     <div class="msg-img" style="background-image: url(${employeeData.photoURL}); visibility: ${isFirstMessage ? 'visible' : 'hidden'};"></div>
                     <div class="msg-bubble ${isFirstMessage ? "" : "no-tail"}" style="position: relative;">
                         <div class="msg-text">${messageData.message}</div>
-                        <div class="msg-info-time">${formatTimestamp(messageData.timestamp)}</div>
+                        <div class="msg-info-time">${messageData.Time}</div>
                         <div class="msg-tail" style="display: ${isFirstMessage ? 'block' : 'none'};"></div>
                     </div>
                 `;
             }
 
             chatContainer.appendChild(messageDiv);
-            lastSenderID = messageData.senderID; // Update last sender ID
+            lastSenderID = messageData.senderID;
         });
 
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to latest message
+        if (!isInitialLoad) {
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
+        } else {
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight });
+        }
+
+        isInitialLoad = false;
     });
 }
 
 
-function formatTimestamp(timestamp) {
-    if (!timestamp) return "Just now";
-    
-    const date = timestamp.toDate();
-    const messageTime = date.getTime();
-    const currentTime = Date.now();
-    
-    // If the message was sent in the last 5 seconds, show "Just now"
-    if (currentTime - messageTime < 5000) {
-        setTimeout(() => {
-            const elements = document.querySelectorAll(".msg-info-time");
-            elements.forEach(el => {
-                if (el.innerText === "Just now") {
-                    el.innerText = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-                }
-            });
-        }, 5000);
 
-        return "Just now";
+async function markMessagesAsRead(chatRoomID) {
+    const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
+    const q = query(messagesRef, orderBy("timestamp", "asc"));
+    if (unsubsnap) {
+        unsubsnap(); // Stop listening to the old chat room
     }
+    unsubsnap=onSnapshot(q, async (snapshot) => {
+        snapshot.forEach(async (docSnap) => {
+            const messageData = docSnap.data();
 
-    return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            if (messageData.receiverID === userData.EmployeeID && !messageData.read) {
+                try {
+                    await updateDoc(doc(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`, docSnap.id), {
+                        read: true
+                    });
+                } catch (error) {
+                    console.error("Error updating read status:", error);
+                }
+            }
+        });
+    });
+}
+
+
+async function clearChatForUser(chatRoomID) {
+    if (!confirm("Are you sure you want to clear the chat? This will not delete messages for the other user.")) return;
+
+    try {
+        const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
+        const querySnapshot = await getDocs(messagesRef);
+
+        // Update each message to mark it as hidden for the current user
+        const batch = writeBatch(db);
+        querySnapshot.forEach((docSnap) => {
+            const messageData = docSnap.data();
+            let hiddenFor = messageData.hiddenFor || []; 
+
+            if (!hiddenFor.includes(userData.EmployeeID)) {
+                hiddenFor.push(userData.EmployeeID);
+            }
+
+            batch.update(docSnap.ref, { hiddenFor: hiddenFor });
+        });
+
+        await batch.commit(); // Execute batch update
+
+        // Clear chat UI for this user only
+        document.getElementById("chat1").innerHTML = "";
+
+        // alert("Chat cleared successfully for you. The other user will still see the messages.");
+    } catch (error) {
+        console.error("Error clearing chat:", error);
+        alert("Failed to clear chat. Please try again.");
+    }
 }

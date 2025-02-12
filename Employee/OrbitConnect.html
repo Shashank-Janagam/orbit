@@ -14,6 +14,8 @@
   <link rel="icon" type="image/png" href="/Images/icon.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="OrbitConnect.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 
   <style>
     
@@ -88,7 +90,7 @@
   </div>
   </div>
   <div class="center">
-    <div class="contacts">
+    <div class="contacts" >
       <div class="chats">
 
       </div>
@@ -107,8 +109,19 @@
         <div class="seen" id="role">
         </div>
         </div>
+        <img id="clearChat" src="/Images/clean.png" alt="">
       </div>
       <div class="chat1" id="chat1">
+        <!-- Pop-up for clearing chat -->
+<div id="clear-chat-pop" class="confirm-popup" style="display: none;">
+  <div class="popup-content">
+      <p>Are you sure you want to clear this chat?</p>
+      <button id="confirm-clear-chat">Yes</button>
+      <button id="cancel-clear-chat">No</button>
+  </div>
+</div>
+
+      
       </div><div class="input" style="background-image: url(/Images/background_in_space.webp);">
         
         

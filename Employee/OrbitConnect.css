@@ -163,7 +163,8 @@ html {
   background-size: cover;
   border-radius: 50%;
   margin-left: 10px;
-  margin-bottom: 30px;
+  align-self: baseline;
+  /* align-items: baseline; */
 }
 .msg-bubble {
   max-width: 450px;

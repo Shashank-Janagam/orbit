@@ -118,7 +118,6 @@ async function sendMessage(chatRoomID, employeeData) {
     const textInput = document.getElementById('textmessage');
     const textMessage = textInput.value.trim();
     const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
-    alert(chatRoomID);
     if (!textMessage) {
         alert("No message entered!");
         return;

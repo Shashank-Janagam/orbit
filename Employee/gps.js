@@ -100,8 +100,8 @@ function getLocationAndCheckRadius() {
         const currentLon = position.coords.longitude;
         // console.log("Your current location: Latitude:", currentLat, "Longitude:", currentLon);
 
-        const userLocation = { lat: currentLat, lng: currentLon };
-        // const userLocation = { lat: 17.2116327, lng: 78.6035148 };
+        // const userLocation = { lat: currentLat, lng: currentLon };
+        const userLocation = { lat: 17.197363, lng: 78.598497 };
 
         // Create a custom icon for the user's location (blue dot)
 

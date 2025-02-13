@@ -88,36 +88,37 @@ async function chattingWith(employeeData) {
     document.querySelector('.name').innerHTML = `${employeeData.name}`;
     document.getElementById('role').innerHTML = `${employeeData.Role}`;
 
-    // 🔹 Create Chat Room ID
-    const sortedIDs = [userData.EmployeeID, employeeData.EmployeeID].sort();
-    const chatRoomID = `${sortedIDs[0]}_${sortedIDs[1]}`;
+    // 🔹 Generate Unique Chat Room ID
+    let sortedIDs = [userData.EmployeeID, employeeData.EmployeeID].sort();
+    let chatRoomID = `${sortedIDs[0]}_${sortedIDs[1]}`;
 
-    
-    // 🔹 Firestore Reference
-    const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
     await markMessagesAsRead(chatRoomID);
-    // Display Messages
+    
+    // Display Messages for the selected chat
     displayMessages(chatRoomID, employeeData);
-document.getElementById("clearChat").addEventListener("click", () => {
-        clearChatForUser(chatRoomID); // Call function with the active chat room ID
-    });
-    // Prevent duplicate event listeners
-    if (!isSendButtonListenerAttached) {
-        document.getElementById('send').addEventListener('click', () => sendMessage(messagesRef, employeeData));
-        document.getElementById('textmessage').addEventListener("keydown", function (event) {
-            if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault(); 
-                sendMessage(messagesRef, employeeData);
-            }
-        });
 
-        isSendButtonListenerAttached = true; // Mark as attached
-    }
+    // 🔹 Remove Previous Event Listeners
+    const sendButton = document.getElementById('send');
+    const textInput = document.getElementById('textmessage');
+
+    sendButton.replaceWith(sendButton.cloneNode(true));
+    textInput.replaceWith(textInput.cloneNode(true));
+
+    // Re-select the new elements
+    document.getElementById('send').addEventListener('click', () => sendMessage(chatRoomID, employeeData));
+    document.getElementById('textmessage').addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(chatRoomID, employeeData);
+        }
+    });
 }
-async function sendMessage(messagesRef, employeeData) {
+
+async function sendMessage(chatRoomID, employeeData) {
     const textInput = document.getElementById('textmessage');
     const textMessage = textInput.value.trim();
-
+    const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
+    alert(chatRoomID);
     if (!textMessage) {
         alert("No message entered!");
         return;

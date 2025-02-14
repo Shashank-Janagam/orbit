@@ -275,7 +275,6 @@ html {
   font-size: large;
   font-family: system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
 
-
 }
 .left-msg .msg-bubble {
   /* font-size: large; */
@@ -290,6 +289,7 @@ html {
   font-size: 0.9em;
   margin-bottom: 5px;
   font-family: sans-serif;
+  min-width: 100px;
   
 }
 
@@ -315,6 +315,7 @@ html {
   font-size: 0.9em;
   margin-bottom: 5px;
   font-family: sans-serif;
+  min-width: 100px;
 }
 
 .right-msg {

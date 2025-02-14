@@ -84,6 +84,7 @@ displayAllEmployees();
 let isSendButtonListenerAttached = false;
 
 async function chattingWith(employeeData) {
+    document.getElementById('textmessage').value="";
     document.getElementById('profile').src = employeeData.photoURL || 'default.png';
     document.querySelector('.name').innerHTML = `${employeeData.name}`;
     document.getElementById('role').innerHTML = `${employeeData.Role}`;
@@ -96,6 +97,7 @@ async function chattingWith(employeeData) {
     
     // Display Messages for the selected chat
     displayMessages(chatRoomID, employeeData);
+    document.getElementById('clearChat').addEventListener('click',() => clearChatForUser(chatRoomID));
 
     // 🔹 Remove Previous Event Listeners
     const sendButton = document.getElementById('send');
@@ -113,42 +115,61 @@ async function chattingWith(employeeData) {
         }
     });
 }
-
 async function sendMessage(chatRoomID, employeeData) {
     const textInput = document.getElementById('textmessage');
-    const textMessage = textInput.value.trim();
-    const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
+    const textMessage = textInput.value.trim();  
+    textInput.value = ""; // Clear input immediately
+
     if (!textMessage) {
         alert("No message entered!");
         return;
     }
 
     try {
-        // 🔹 Fetch IST Date & Time
-        const response = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata");
-        const data = await response.json();
+        const messagesRef = collection(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`);
 
-        // Extract Date & Time
-        const [month, day, year] = data.date.split("/");
-        const formattedDate = `${day}-${month}-${year}`;
-        const formattedTime = data.time.slice(0, 5); // Extract "HH:MM"
-
-        // 🔹 Store in Firestore
-        await addDoc(messagesRef, {
+        // 🔹 Send message immediately with serverTimestamp
+        const messageRef = await addDoc(messagesRef, {
             senderID: userData.EmployeeID,
             receiverID: employeeData.EmployeeID,
             message: textMessage,
-            Date: formattedDate,  // Store IST Date
-            Time: formattedTime,  // Store IST Time
             timestamp: serverTimestamp(),
+            Date:"Today",
+            Time:"Just Now",
             read: false
         });
 
-        textInput.value = ""; // Clear input after sending
+
+        // 🔹 Fetch IST Date & Time asynchronously without blocking message sending
+        fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata")
+            .then(response => response.json())
+            .then(async data => {
+                const [month, day, year] = data.date.split("/");
+                const formattedDate = `${day}-${month}-${year}`;
+                const formattedTime = data.time.slice(0, 5); // Extract "HH:MM"
+
+                // 🔹 Update message with actual IST date & time
+                await updateDoc(doc(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`, messageRef.id), {
+                    Date: formattedDate,
+                    Time: formattedTime
+                });
+            })
+            .catch(error => console.error("Error fetching IST time:", error));
+
     } catch (error) {
-        console.error("Error fetching IST time:", error);
+        console.error("Error sending message:", error);
     }
 }
+let todaydate=null;
+fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata")
+            .then(response => response.json())
+            .then(async data => {
+                const [month, day, year] = data.date.split("/");
+                 todaydate = `${day}-${month}-${year}`;
+
+
+            })
+            .catch(error => console.error("Error fetching IST time:", error));
 
 let unsubscribeMessages = null; // Store the unsubscribe function
 let unsubsnap=null;
@@ -188,15 +209,22 @@ async function displayMessages(chatRoomID, employeeData) {
                 return; // Skip this message
             }
             const messageDate = messageData.Date;
-            if (messageDate !== lastMessageDate) {
+
+            if (messageDate !== lastMessageDate && messageDate !== "Today") { 
+                // Add a date separator only if it's different from the last message date
                 const dateSeparator = document.createElement("div");
                 dateSeparator.classList.add("date-separator");
+                if(messageDate==todaydate){
+                    dateSeparator.innerText = "Today";
+                }else{
                 dateSeparator.innerText = messageDate;
+                }
                 chatContainer.appendChild(dateSeparator);
-                lastMessageDate = messageDate;
+                lastMessageDate = messageDate;  // Update last message date
             }
+            
 
-            let isFirstMessage = lastSenderID !== messageData.senderID;
+            let isFirstMessage = lastSenderID !== messageData.senderID ||lastSenderID!=null;
             let readStatusIcon = messageData.read
             ? '<img id="check" src="/Images/check.png" class="tick-img">'  // ✅✅ Blue Double Check
             : '<img id="check" src="/Images/check1.png" class="tick-img">';        // Single Gray Tick
@@ -264,6 +292,7 @@ async function markMessagesAsRead(chatRoomID) {
         });
     });
 }
+
 
 
 async function clearChatForUser(chatRoomID) {

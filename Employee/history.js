@@ -78,7 +78,6 @@ if (!userEmail) {
             <td style="color: ${statusColor};">${data.Status || "--"}</td>
             <td>${data.Firstlogin || "--"}</td>
             <td>${data.Lastlogin || "--"}</td>
-            <td>${data.Logindata || "--"}</td>
           </tr>
         `;
       });
@@ -97,7 +96,6 @@ if (!userEmail) {
               <th>Status</th>
               <th>First Login</th>
               <th>Last Login</th>
-              <th>Logins</th>
             </tr>
           </thead>
           <tbody>

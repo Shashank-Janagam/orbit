@@ -122,30 +122,25 @@ async function handleSignIn() {
         console.log(userData.DeviceId);
 if(userData.DeviceId!=finger){
 
-   try {
-      await signOut(auth); // Sign out the user
-      console.log("User successfully logged out.");
-      
-      // Clear sessionStorage
-      sessionStorage.removeItem('userUID');
-      
-      // Redirect to the login page
-    } catch (error) {
-      console.error("Error during logout:", error);
-      alert("Logout failed. Please try again.");
-    }
-
   
     console.log("Not a registered device"      );
 
-      window.location.href="/invalidDevice.html";
+      // window.location.href="/invalidDevice.html";
+      const dev=false;
+      sessionStorage.setItem('rdevice',dev);
+      sessionStorage.setItem('userUID', user.uid);
+      sessionStorage.setItem('userEmail', user.email);
+      window.location.href="/Employee/home.html";
+
+
 
     }else{
       console.log("Login event recorded in Firestore.");
 
       // Save UID in sessionStorage
       sessionStorage.setItem('userEmail', user.email);
-
+      const dev=true;
+      sessionStorage.setItem('rdevice',dev);
       sessionStorage.setItem('userUID', user.uid);
       window.location.href="/Employee/home.html";
     }

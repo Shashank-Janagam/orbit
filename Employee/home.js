@@ -25,9 +25,12 @@ const db = getFirestore(app); // Initialize Firestore
 // File where the user details are displayed (e.g., userDetails.js)
 const userUID = sessionStorage.getItem('userUID');
 const company=sessionStorage.getItem('company');
-
+const rdevice=sessionStorage.getItem('rdevice');
 let userData=null;
-
+if(rdevice=="false"){
+  // alert("not a registered device",rdevice);
+  document.getElementById('detect').style.display="none";
+}
 if (!userUID) {
   console.log("No user is authenticated!");
   alert("Please sign in to proceed.");
@@ -65,6 +68,7 @@ if (!userUID) {
 }
 
 
+const notificationSound = new Audio("/Images/notifi.mp3"); // Place a valid audio file in your project
 
 async function listenForUserMessages() {
     try {
@@ -89,7 +93,7 @@ async function listenForUserMessages() {
                             console.log("New message received:", messageData);
                             setTimeout(async () => {},5000);
 
-                            if (messageData.receiverID === userData.EmployeeID && !messageData.read) {
+                            if (messageData.receiverID === userData.EmployeeID && !messageData.read && !messageData.notified) {
                                 console.log("Triggering notification for:", messageData.message);
 
                                 // Fetch sender details
@@ -97,6 +101,7 @@ async function listenForUserMessages() {
                                     collection(db, `company/${company}/users`),
                                     where("EmployeeID", "==", messageData.senderID)
                                 );
+                                notificationSound.play().catch(error => console.log("Audio play blocked:", error));
 
                                 const senderSnapshot = await getDocs(senderQuery);
 
@@ -113,6 +118,13 @@ async function listenForUserMessages() {
 
                                 // Trigger the toast notification with message details
                                 showToast(senderData.name, senderData.photoURL, messageData.message);
+                                  try {
+                                    await updateDoc(doc(db, `company/${company}/OrbitConnect/${chatRoomID}/messages`, change.doc.id), {
+                                        notified: true
+                                    });
+                                } catch (error) {
+                                    console.error("Error updating read status:", error);
+                                }
                             }
                         }
                     });
@@ -132,11 +144,12 @@ function showToast(senderName, senderPhoto, messageText) {
         return;
     }
 
-    // Update toast content dynamically
-    document.querySelector(".notification-user-avatar").src = senderPhoto;
-    document.querySelector(".notification-text strong").innerText = senderName;
-    document.querySelector(".notification-text").innerHTML = `<strong>${senderName}</strong>: ${messageText}`;
+  // Update toast content dynamically
+  const trimmedMessage = messageText.length > 15 ? messageText.substring(0, 15) + "..." : messageText;
 
+  document.querySelector(".notification-user-avatar").src = senderPhoto;
+  document.querySelector(".notification-text strong").innerText = senderName;
+  document.querySelector(".mestxt").innerHTML=trimmedMessage;
     // Show notification with animation
     toast.style.display = "block";
     setTimeout(() => {

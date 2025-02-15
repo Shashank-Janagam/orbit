@@ -237,7 +237,6 @@ async function logAttendance() {
                 Date: formattedDate,
                 Date2:date,
                 Status:"Present",
-                Logindata: time,
                 Firstlogin:time,
                 Lastlogin:time,
               };
@@ -251,10 +250,7 @@ async function logAttendance() {
               }else{
               console.log("alredy updated");
               console.log(formattedDate);
-              const oldTime = attendanceDoc.data().Logindata || ""; // Get existing time data
-              const updatedTime = `${oldTime}\n\n${time}`; // Append new time
               
-              await setDoc(attendanceDocRef, { Logindata: updatedTime },{ merge: true });
               await setDoc(attendanceDocRef,{Lastlogin:time},{merge:true});
               console.log("Attendance updated successfully with new time!");
               document.getElementById('result').textContent="Already attended"

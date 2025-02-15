@@ -547,10 +547,15 @@ font-family: "Dancing Script", serif;
 }
 
 #detect{
-  background-image: url("/Images/fence.avif");
+  background-image: url("/Images/detect.gif");
   background-repeat: no-repeat;
   background-size: contain;
 
+}
+#connect{
+  background-image: url("/Images/orbitanimated.gif");
+  background-repeat: no-repeat;
+  background-size:contain;
 }
 #projects{
   background-image: url("/Images/projects.avif");

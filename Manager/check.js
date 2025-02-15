@@ -135,7 +135,6 @@ search.addEventListener('click', async () => {
               <td style="color: ${statusColor};">${data.Status || "--"}</td>
                   <td>${data.Firstlogin || "--"}</td>
                   <td>${data.Lastlogin || "--"}</td>
-                  <td>${data.Logindata || "--"}</td>
                 </tr>
               `;
           });
@@ -151,7 +150,6 @@ search.addEventListener('click', async () => {
                           <th>Status</th>
                           <th>First Login</th>
                           <th>Last Login</th>
-                          <th>Logins</th>
                       </tr>
                   </thead>
                   <tbody>

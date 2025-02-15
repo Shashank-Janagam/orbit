@@ -23,15 +23,52 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
      const db = getFirestore(app); // Initialize Firestore
 
-function generateDeviceID() {
-  const userAgent = navigator.userAgent; // User's browser/device info
-  const platform = navigator.platform; // OS/platform info
-  const randomSalt = "random_salt_value"; // Add a salt for uniqueness
-  const rawID = `${userAgent}-${platform}-${randomSalt}`;
-  // const rawID=`${userAgent}`;
-  return btoa(rawID); // Encode to create a unique identifier
+const fixedFontList = [
+  "Arial", "Verdana", "Courier New", "Georgia", "Times New Roman", "Tahoma", "Trebuchet MS"
+];
+
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
 }
 
+// Canvas Fingerprinting
+function generateCanvasFingerprint() {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.textBaseline = "top";
+  ctx.font = "14px 'Arial'";
+  ctx.fillText('Hello World!', 2, 2);
+  const data = canvas.toDataURL();
+  return hashString(data);
+}
+
+// WebGL Fingerprinting
+function getWebGLFingerprint() {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+  const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+  return hashString(renderer + vendor);
+}
+
+// Gathering all data for fingerprint
+function generateFingerprint() {
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform;
+  const screenRes = `${screen.width}x${screen.height}`;
+  const fonts = fixedFontList.join(','); // Use the fixed font list
+  const canvasFingerprint = generateCanvasFingerprint();
+  const webglFingerprint = getWebGLFingerprint();
+
+  const fingerprintData = `${userAgent}-${platform}-${screenRes}-${fonts}-${canvasFingerprint}-${webglFingerprint}`;
+  return hashString(fingerprintData);
+}
 
 // Manual Sign-In
 const signinButton = document.getElementById('signinButton');
@@ -82,34 +119,40 @@ if (signinButton) {
            // Check if the user already exists in Firestore
            const userDoc = await getDoc(userRef);
      
-           // Generate the current device ID
-           const currentDeviceID = generateDeviceID();
-     
-          //  if (userDoc.exists()) {
-             const userData = userDoc.data();
-     
-             // Check if the device ID matches the stored device IDgit
-             if (userData.deviceID && userData.deviceID !== currentDeviceID) {
-               console.error("You can only log in from the device you initially used.");
-               signOut(auth)
-                                   .then(() => {
-                                     console.log("User has been logged out automatically.");
-                                   })
-                                   .catch((error) => {
-                                     console.error("Error logging out the user:", error);
-                                   });
-               window.location.href = "/invalidDevice.html"; // Redirect to a page showing the device restriction message
-              //  return;
-             }
-          //  } else {
-     
-     
-          sessionStorage.setItem('userEmail', user.email);
-
-           // Save UID in sessionStorage
-           sessionStorage.setItem('userUID', user.uid);
-           window.location.href = userDoc.exists() ? "/Employee/home.html" : "/Employee/userDetails.html";
-     
+           
+                 if (userDoc.exists()) {
+                   const userData = userDoc.data();
+                   const finger=generateFingerprint();
+                   console.log(finger);
+                   console.log(userData.DeviceId);
+           if(userData.DeviceId!=finger){
+           
+        
+             
+               console.log("Not a registered device"      );
+           
+                 // window.location.href="/invalidDevice.html";
+                 const dev=false;
+                 sessionStorage.setItem('rdevice',dev);
+                 sessionStorage.setItem('userUID', user.uid);
+                 sessionStorage.setItem('userEmail', user.email);
+                 window.location.href="/Employee/home.html";
+           
+           
+           
+               }else{
+                 console.log("Login event recorded in Firestore.");
+           
+                 // Save UID in sessionStorage
+                 sessionStorage.setItem('userEmail', user.email);
+                 const dev=true;
+                 sessionStorage.setItem('rdevice',dev);
+                 sessionStorage.setItem('userUID', user.uid);
+                 window.location.href="/Employee/home.html";
+               }
+                
+                 } 
+           
          }
          else if(!pmanagers.empty){
      

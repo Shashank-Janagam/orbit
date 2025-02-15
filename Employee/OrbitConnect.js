@@ -502,3 +502,23 @@ listenForUserMessages();
 
 
 // ✅ Start Listening for Messages Only for the User
+const unsubscribe = db.collection("messages")
+  .where("chatId", "==", "12345")
+  .onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type === "added") {
+        console.log("New message: ", change.doc.data());
+      }
+    });
+  });
+  
+  document.getElementById('dhome').addEventListener('click', () => {
+    const content = document.getElementById('profile');
+    content.classList.add('fade-out');
+    setTimeout(() => {
+        unsubscribe();
+      window.location.href = 'home.html';
+
+    }, 500); // Duration of the fade-out
+  });
+// Call this when component unmounts or when real-time updates aren't needed

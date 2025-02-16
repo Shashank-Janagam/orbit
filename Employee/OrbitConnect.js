@@ -498,7 +498,7 @@ function hideToast() {
 }
 
 // Start Listening for Messages
-listenForUserMessages();
+// listenForUserMessages();
 
 
 // ✅ Start Listening for Messages Only for the User

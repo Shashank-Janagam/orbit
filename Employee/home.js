@@ -171,7 +171,7 @@ function hideToast() {
 }
 
 // Start Listening for Messages
-listenForUserMessages();
+// listenForUserMessages();
 
 
 // // Check if user is authenticated

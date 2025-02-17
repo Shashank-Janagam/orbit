@@ -109,8 +109,16 @@
     </h5>
     
   </div>
- 
 
+
+ </div>
+ <div class="contains" id="contains">
+  <div id="leave" class="emplo">
+    <h5 id=  "mp">
+      Request For leave
+    </h5>
+    
+  </div>
 
  </div> 
  
@@ -177,6 +185,15 @@
       setTimeout(() => {
         // window.location.href = 'location.html';
         window.location.href = 'attendhis.html';
+
+      },5); // Duration of the fade-out
+    });
+    document.getElementById('leave').addEventListener('click', () => {
+      const content = document.getElementById('contains');
+      // content.classList.add('fade-out');
+      setTimeout(() => {
+        // window.location.href = 'location.html';
+        window.location.href = 'leave.html';
 
       },5); // Duration of the fade-out
     });

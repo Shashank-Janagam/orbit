@@ -1,0 +1,205 @@
+.portion{
+    display: flex;
+    /* background-color: aliceblue; */
+    height: 450px;
+    /* width: 100%; */
+    gap:20px;
+
+}
+.leavedet {
+    height: 92%;
+    width: 30%;
+    background-color: white;
+    border-radius: 8px;
+    align-self: center;
+    display: block;  /* Block-level element */
+    padding: 20px;
+    /* align-items: center; */
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+#selecteddates {
+    /* background-color: #d0d0d0; */
+    background-color: white;
+    width: 80%;
+    height: 30%;
+    color: white;
+    display: flex; /* Use Flexbox */
+    border-radius: 8px;
+    margin-top: 5%;
+    flex-wrap: wrap;
+    margin-left: 10%;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+
+}
+#history{
+    height: 92%;
+    width: 25%;
+    background-color: white;
+    border-radius: 8px;
+    align-self: center;
+    display: block;  /* Block-level element */
+    padding: 20px;
+    /* align-items: center; */
+    box-sizing: border-box;
+    justify-content: center;
+    overflow: scroll;
+    /* scrollbar-width: 0px; */
+    scrollbar-width: none;
+
+}
+.leaves {
+    background-color: rgb(194, 248, 188);
+    /* width: 90%; */
+    padding: 20px;
+    color: #333;
+    display: flex; /* Flexbox for layout */
+    flex-direction: column; /* Stack content vertically */
+    margin-top: 5%;
+    margin-left: 1%;
+    border-radius: 8px;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+}
+
+.leave-details {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dates-section {
+    width: 100%;
+}
+
+.leave-dates-container {
+    display: flex; /* Display dates side by side */
+    flex-wrap: wrap; /* Wrap to next line if needed */
+    gap: 10px; /* Space between dates */
+    margin-top: 10px;
+}
+
+.leave-dates-container div {
+    background-color: #d1e7d1; /* Light green background for each date */
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 0 1 auto; /* Allow dates to shrink but not grow */
+}
+
+.rdate, .res, .status {
+    margin: 5px 0;
+    font-size: 15px;
+}
+
+.adates {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#fel{
+    width: 80%;
+    height: 20px;
+    margin-top: 20px;
+    align-self: center;
+    margin-left: 10%;
+    color: red;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+#fell{
+    width: 80%;
+    height: 20px;
+    margin-top: 20px;
+    align-self: center;
+    margin-left: 10%;
+    color: rgb(225, 186, 77);
+    text-align: center;
+    display: none;
+    justify-content: center;
+    align-content: center;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+.dates{
+    margin-top: 10px;
+    margin-left: 10px;
+    border-radius: 50px;
+    width: 30%;
+    height: 30%;
+    color: #333;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    background-color:white;
+    font-weight: bold;
+    margin-left: 5px;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+
+}
+.input {
+    box-sizing: border-box;
+    flex-basis: 4rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem 0 1.5rem;
+  }
+  .input textarea {
+    
+    background-image: none;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    border-radius: 1.0005rem;
+    flex-grow: 2;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+    font-family: Red hat Display, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.025em; 
+     border: none;
+     height: 40%;
+     scrollbar-width: none;
+     resize: none; /* Completely disable resizing */
+    border: none;
+    font-weight:500;
+    box-sizing: border-box;
+    outline: none;
+    margin-top: 10%;
+
+  
+  }
+  .input textarea:placeholder {
+    color: #999;
+  }
+#request{
+    background-color: #f6d677;
+    border-radius: 15px;
+
+    /* width: 17%; */
+    color:#333;
+    border: none;
+    font-family: sans-serif;
+    /* left: 50%; */
+    align-content: center;
+    font-weight: 700;
+    margin-top: 30px !important;
+    font-size: 20px;
+    text-align: center;
+    width: 18vmax;
+    /* max-width: 17%; */
+    margin-left: 15%;
+    height: 47.5px;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+
+}
+#request:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+
+}

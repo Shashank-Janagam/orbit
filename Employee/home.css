@@ -545,7 +545,12 @@ font-family: "Dancing Script", serif;
   font-size: 1.5rem;
 
 }
+#leave{
+  background-image: url("/Images/leave.png");
+  background-repeat: no-repeat;
+  background-size: contain;
 
+}
 #detect{
   background-image: url("/Images/detect.gif");
   background-repeat: no-repeat;

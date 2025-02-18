@@ -387,7 +387,6 @@ let time=null;
               <td>${data.Role || "--"}</td>
               <td>${data.Firstlogin || "--"}</td>
               <td>${data.Lastlogin || "--"}</td>
-              <td>${data.Logindata || "--"}</td>
             </tr>
           `;
         });
@@ -408,7 +407,6 @@ let time=null;
                         <th>Role</th>
                         <th>First Login</th>
                         <th>Last Login</th>
-                        <th>Logins</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -480,7 +478,6 @@ let time=null;
                           <th>Role</th>
                           <th>First Login</th>
                           <th>Last Login</th>
-                          <th>Logins</th>
                       </tr>
                   </thead>
                   <tbody>

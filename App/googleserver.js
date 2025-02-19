@@ -116,39 +116,32 @@ async function handleSignIn() {
       // Generate the current device ID
 
       if (userDoc.exists()) {
+        const biometricSuccess = await verifyBiometric();
+    
+        if (!biometricSuccess) {
+            alert("Biometric registration failed. Please try again.");
+            return; // ❌ Prevent redirection if biometric fails
+          }  
         const userData = userDoc.data();
         const finger=generateFingerprint();
         console.log(finger);
         console.log(userData.DeviceId);
-if(userData.DeviceId!=finger){
 
-  
-    console.log("Not a registered device"      );
-
-      // window.location.href="/invalidDevice.html";
-      const dev=false;
-      sessionStorage.setItem('rdevice',dev);
-      sessionStorage.setItem('userUID', user.uid);
-      sessionStorage.setItem('userEmail', user.email);
-      window.location.href="/Employee/home.html";
-
-
-
-    }else{
-      console.log("Login event recorded in Firestore.");
 
       // Save UID in sessionStorage
       sessionStorage.setItem('userEmail', user.email);
-      const dev=true;
-      sessionStorage.setItem('rdevice',dev);
       sessionStorage.setItem('userUID', user.uid);
       window.location.href="/Employee/home.html";
-    }
+    
      
       } else {
         const fingerprint = generateFingerprint();
-
-        // If the us
+        const biometricSuccess = await registerBiometric();
+    
+        if (!biometricSuccess) {
+            alert("Biometric registration failed. Please try again.");
+            return; // ❌ Prevent redirection if biometric fails
+          }                    // If the us
         // er is logging in for the first time, register their device
         const userDetails = {
           name: user.displayName,
@@ -181,6 +174,7 @@ if(userData.DeviceId!=finger){
     }
     else if(!pmanagers.empty){
 
+
       console.log("Manager is allowed to log in.");
 
       const cmpref=doc(db,'allowedManagers',user.email.replace("@gmail.com",""));
@@ -196,6 +190,12 @@ if(userData.DeviceId!=finger){
       // const currentDeviceID = generateDeviceID();
 
       if (!userDoc.exists()) {
+        const biometricSuccess = await registerBiometric();
+    
+        if (!biometricSuccess) {
+            alert("Biometric registration failed. Please try again.");
+            return; // ❌ Prevent redirection if biometric fails
+          } 
 
  // If the user is logging in for the first time, register their device
         const userDetails = {
@@ -215,17 +215,27 @@ if(userData.DeviceId!=finger){
         await setDoc(userRef, userDetails);
         console.log("User details saved to Firestore!");
         
-
+        sessionStorage.setItem('userEmail', user.email);
+        sessionStorage.setItem('company',companyName);
+  
+        sessionStorage.setItem('userUID', user.uid);
+        window.location.href = "/Manager/mhome.html";
         
-      }
+      }else{
         // / Log successful login in Firestore
-      
+        const biometricSuccess = await verifyBiometric();
+    
+        if (!biometricSuccess) {
+            alert("Biometric registration failed. Please try again.");
+            return; // ❌ Prevent redirection if biometric fails
+          }  
       // Save UID in sessionStorage
       sessionStorage.setItem('userEmail', user.email);
       sessionStorage.setItem('company',companyName);
 
       sessionStorage.setItem('userUID', user.uid);
       window.location.href = "/Manager/mhome.html";
+      }
 
        
 
@@ -252,3 +262,142 @@ window.onload = () => {
     handleSignIn();
   }, 500); // Delay for 1 second
 };
+
+
+async function registerBiometric() {
+  if (!window.PublicKeyCredential) {
+      alert("WebAuthn is not supported in this browser.");
+      return false;
+  }
+
+  const challenge = new Uint8Array(32);
+  window.crypto.getRandomValues(challenge);
+
+  const options = {
+      publicKey: {
+          challenge: challenge,
+          rp: { name: "GeoOrbit" },
+          user: {
+              id: new Uint8Array(16), // Must be consistent
+              name: auth.currentUser ? auth.currentUser.email : "guest",
+              displayName: auth.currentUser ? auth.currentUser.displayName : "Guest User"
+          },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }], // ECDSA with SHA-256
+          authenticatorSelection: {
+              authenticatorAttachment: "platform",
+              userVerification: "required"
+          },
+          timeout: 60000,
+      }
+  };
+
+  try {
+      const credential = await navigator.credentials.create(options);
+      if (!credential) {
+          alert("Failed to create credential.");
+          return false;
+      }
+
+      const credentialID = btoa(String.fromCharCode(...new Uint8Array(credential.rawId))); // Convert to base64
+      console.log("Credential ID:", credentialID);
+
+      // ✅ Store the credential ID in Firestore
+      const userRef = doc(db, "biometricData", auth.currentUser.uid);
+      await setDoc(userRef, { credentialID: credentialID });
+
+      alert("Biometric registered successfully!");
+      return true;
+  } catch (error) {
+      console.error("Error during biometric registration:", error);
+      alert("Biometric registration failed.");
+      return false;
+  }
+}
+
+async function verifyBiometric() {
+  if (!window.PublicKeyCredential) {
+      alert("WebAuthn is not supported in this browser.");
+      return false;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+      alert("User is not authenticated.");
+      return false;
+  }
+
+  // 🔍 Fetch the stored credential ID from Firestore
+  const userRef = doc(db, "biometricData", user.uid);
+  const userDoc = await getDoc(userRef);
+
+  if (!userDoc.exists()) {
+      alert("No biometric data found. Please register first.");
+      logout();
+      window.location.href="/index.html";
+      return false;
+  }
+
+  const storedCredentialID = userDoc.data().credentialID;
+  console.log("Stored Credential ID:", storedCredentialID);
+
+  const challenge = new Uint8Array(32);
+  window.crypto.getRandomValues(challenge);
+
+  const options = {
+      publicKey: {
+          challenge: challenge,
+          allowCredentials: [{
+              id: Uint8Array.from(atob(storedCredentialID), c => c.charCodeAt(0)), // Convert back from base64
+              type: "public-key"
+          }],
+          timeout: 60000,
+          userVerification: "required"
+      }
+  };
+
+  try {
+      const assertion = await navigator.credentials.get(options);
+      if (!assertion) {
+          alert("Authentication failed.");
+          logout();
+          window.location.href="/index.html";
+          return false;
+      }
+
+      const assertionID = btoa(String.fromCharCode(...new Uint8Array(assertion.rawId))); // Convert assertion ID to base64
+      console.log("Assertion ID:", assertionID);
+
+      // ✅ Check if the assertion ID matches the stored credential ID
+      if (assertionID !== storedCredentialID) {
+          alert("Unauthorized biometric detected! Stored ID and assertion ID do not match.");
+          logout();
+          window.location.href="/index.html";
+          return false;
+      }
+
+      console.log("Biometric verification successful!");
+      window.location.href = "/Employee/home.html"; // ✅ Redirect after success
+      return true;
+  } catch (error) {
+      console.error("Biometric authentication failed:", error);
+      alert("Biometric authentication failed. Please try again.");
+      logout();
+      window.location.href="/index.html";
+      return false;
+  }
+}
+async function logout(){
+try {
+    await signOut(auth); // Sign out the user
+    console.log("User successfully logged out.");
+    
+    // Clear sessionStorage
+    sessionStorage.removeItem('userUID');
+    
+    // Redirect to the login page
+    window.location.href = "/index.html";
+  } catch (error) {
+    console.error("Error during logout:", error);
+    alert("Logout failed. Please try again.");
+  }
+}

@@ -27,10 +27,7 @@ const userUID = sessionStorage.getItem('userUID');
 const company=sessionStorage.getItem('company');
 const rdevice=sessionStorage.getItem('rdevice');
 let userData=null;
-if(rdevice=="false"){
-  // alert("not a registered device",rdevice);
-  document.getElementById('detect').style.display="none";
-}
+
 if (!userUID) {
   console.log("No user is authenticated!");
   alert("Please sign in to proceed.");

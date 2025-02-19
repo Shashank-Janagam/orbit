@@ -204,12 +204,11 @@ async function handleSignIn() {
           photoURL: user.photoURL,
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Manager",
-          Dob:"",
-          mobileNumber:"",
-          Company:companyName,
-          // Company: data1.company,
-          // deviceID: currentDeviceID, // Store the device ID
-        };
+          Company: companyName,
+          DeviceId:fingerprint,
+          Dob:cmpdata.Dob,
+          mobileNumber:cmpdata.mobile, // Store the device ID
+            };
 
         console.log("User not found in Firestore, saving details...");
         await setDoc(userRef, userDetails);

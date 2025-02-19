@@ -205,7 +205,6 @@ async function handleSignIn() {
           EmployeeID: user.email.replace("@gmail.com", ""),
           Role: "Manager",
           Company: companyName,
-          DeviceId:fingerprint,
           Dob:cmpdata.Dob,
           mobileNumber:cmpdata.mobile, // Store the device ID
             };
@@ -295,6 +294,7 @@ async function registerBiometric() {
       if (!credential) {
           alert("Failed to create credential.");
           return false;
+
       }
 
       const credentialID = btoa(String.fromCharCode(...new Uint8Array(credential.rawId))); // Convert to base64
